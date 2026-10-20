@@ -1,0 +1,27 @@
+# Rust
+target/
+# Android / Gradle
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+*.apk
+*.aab
+# iOS
+ios/*.xcodeproj
+ios/Payload/
+ios/build/
+ios/TemoinCore/.build/
+ios/TemoinCore/.swiftpm/
+*.ipa
+# Desktop
+desktop/src-tauri/gen/
+desktop/src-tauri/resources/cloudflared.exe
+# Local data and secrets (never commit a private key)
+.env
+server/data/
+identity*.txt
+!tools/testdata/identity.txt
+*.identity
+.DS_Store
+hs_err_pid*.log

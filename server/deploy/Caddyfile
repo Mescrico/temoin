@@ -1,0 +1,8 @@
+# Caddy in front of a Témoin server: automatic HTTPS, then forward everything.
+# Set SR_TRUST_PROXY=true on the server so the journal keeps the real client IP.
+record.example.org {
+	request_body {
+		max_size 20MB
+	}
+	reverse_proxy 127.0.0.1:8080
+}

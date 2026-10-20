@@ -1,0 +1,6 @@
+target
+.git
+data
+*.age
+identity*.txt
+desktop

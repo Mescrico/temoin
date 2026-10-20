@@ -1,0 +1,68 @@
+[package]
+name = "temoin-server"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+description = "Write-only server for Témoin: receives age-encrypted photos/videos it can never read."
+repository = "https://github.com/temoin-app/temoin"
+default-run = "temoin-server"
+autobins = false
+
+[lib]
+name = "srec"
+path = "src/lib.rs"
+
+[[bin]]
+name = "temoin-server"
+path = "src/main.rs"
+
+[[bin]]
+name = "sr"
+path = "src/bin/sr.rs"
+
+[dependencies]
+anyhow = "1"
+thiserror = "2"
+axum = "0.8"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "fs", "signal", "sync", "time", "process", "io-util"] }
+tokio-util = { version = "0.7", features = ["io"] }
+tower-http = { version = "0.6", features = ["trace", "timeout"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+hex = "0.4"
+base64 = "0.22"
+time = { version = "0.3", features = ["formatting", "parsing", "macros"] }
+qrcode = { version = "0.14", default-features = false, features = ["svg"] }
+fs4 = "0.13"
+clap = { version = "4", features = ["derive"] }
+rand = "0.8"
+subtle = "2"
+urlencoding = "2"
+# crypto (reference sealer + decryption tooling)
+age = "0.11"
+x25519-dalek = { version = "2", features = ["static_secrets"] }
+ed25519-dalek = { version = "2", features = ["rand_core"] }
+hkdf = "0.12"
+hmac = "0.12"
+chacha20poly1305 = "0.10"
+bech32 = "0.11"
+aes-gcm = "0.10"
+# sr share: talks to the server admin API
+ureq = { version = "2", features = ["json"] }
+rustls-acme = { version = "0.15", default-features = false, features = ["axum", "ring", "tls12", "webpki-roots"] }
+axum-server = { version = "0.8", features = ["tls-rustls-no-provider"] }
+tokio-stream = "0.1"
+rpassword = "7"
+
+[dev-dependencies]
+tower = { version = "0.5", features = ["util"] }
+http-body-util = "0.1"
+tempfile = "3"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true

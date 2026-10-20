@@ -1,0 +1,11 @@
+Témoin Serveur bundles third-party software:
+
+cloudflared — Cloudflare Tunnel client
+  https://github.com/cloudflare/cloudflared
+  Copyright Cloudflare, Inc.
+  Licensed under the Apache License, Version 2.0
+  https://www.apache.org/licenses/LICENSE-2.0
+  Shipped unmodified, as published by Cloudflare (Authenticode-signed binary).
+
+The Rust crates compiled into temoin-desktop.exe are listed with their
+licenses in the source repository (desktop/src-tauri/Cargo.lock).

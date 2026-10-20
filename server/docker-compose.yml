@@ -1,0 +1,25 @@
+# Témoin server — write-only drop.
+# Only the PUBLIC key (age1…) goes here. Keep the identity file offline.
+services:
+  temoin:
+    image: ghcr.io/temoin-app/temoin-server:${SR_TAG:-latest}
+    build: .
+    container_name: temoin
+    # Restarts after a crash and whenever Docker starts (boot), even if it was stopped by hand.
+    restart: always
+    ports:
+      - "${SR_PORT:-8080}:8080"
+    env_file: .env
+    volumes:
+      - ${SR_DATA:-./data}:/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+          cpus: "2"

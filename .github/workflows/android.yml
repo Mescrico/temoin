@@ -1,0 +1,68 @@
+name: Android
+
+on:
+  push:
+    branches: [main]
+    tags: ['v[0-9]+.[0-9]+.[0-9]+']
+    paths: ['android/**', 'tools/**', '.github/workflows/android.yml']
+  pull_request:
+    paths: ['android/**', 'tools/**']
+  workflow_dispatch:
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: android
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Unit tests (crypto vectors + MPEG-TS muxer)
+        run: ./gradlew testDebugUnitTest
+      - name: Interop — decrypt Kotlin-sealed vectors with the reference Go age
+        run: |
+          sudo apt-get install -y -qq age ffmpeg >/dev/null
+          ../tools/check-vectors.sh app/build/interop
+          # Ed25519 device signatures: verified by an independent implementation (PyNaCl / libsodium)
+          pip install -q pynacl
+          python3 ../tools/check-sigs.py app/build/interop/sig_android_*.json
+          for f in app/build/ts/*.ts; do ffmpeg -v error -i "$f" -f null - ; done
+          echo "TS segments decode cleanly"
+      - name: Release APK
+        env:
+          SR_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          SR_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          SR_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          SR_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -n "$SR_KEYSTORE_B64" ]; then
+            echo "$SR_KEYSTORE_B64" | base64 -d > /tmp/release.jks
+            export SR_KEYSTORE=/tmp/release.jks
+          fi
+          ./gradlew assembleRelease
+          cp app/build/outputs/apk/release/app-release.apk ../Temoin-${GITHUB_REF_NAME//\//-}-android.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Temoin-android
+          path: Temoin-*.apk
+
+      - name: Attach to the GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        working-directory: .
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --draft --title "Témoin $GITHUB_REF_NAME" --notes "See CHANGELOG.md" || true
+          gh release upload "$GITHUB_REF_NAME" Temoin-*.apk --clobber

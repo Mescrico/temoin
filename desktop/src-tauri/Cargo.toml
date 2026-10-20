@@ -1,0 +1,35 @@
+[package]
+name = "temoin-desktop"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+description = "Témoin server for a home PC: setup wizard, quick tunnel, invitations, recovery."
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+srec = { package = "temoin-server", path = "../../server" }
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-dialog = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-autostart = "2"
+tauri-plugin-single-instance = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["sync"] }
+anyhow = "1"
+age = "0.11"
+qrcode = { version = "0.14", default-features = false, features = ["svg"] }
+rand = "0.8"
+base64 = "0.22"
+time = { version = "0.3", features = ["formatting", "macros", "local-offset"] }
+keepawake = "0.6"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+sys-locale = "0.3"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true

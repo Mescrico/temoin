@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Témoin</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- First run: one question per screen -->
+  <div id="onboarding" class="onboarding hidden">
+    <div class="ob-card" id="ob-card"></div>
+  </div>
+
+  <!-- Main window -->
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="logo.png" alt="">
+        <div><b>Témoin</b><small id="brand-name"></small></div>
+      </div>
+      <nav id="nav" class="stack" style="gap:2px"></nav>
+      <div class="spacer"></div>
+      <div class="server-box" id="server-box"></div>
+    </aside>
+    <main class="content" id="content"></main>
+  </div>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true"></div>
+  <div id="toast" class="toast hidden" role="status"></div>
+
+  <script src="icons.js"></script>
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

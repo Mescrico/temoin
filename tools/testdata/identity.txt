@@ -1,0 +1,4 @@
+# TEST-ONLY identity for interop tests. Public on purpose. NEVER use for real data.
+# created: 2026-10-19T10:42:55.992791085Z
+# public key: age1vy0mm5yzn08fjcur7l7a58evfd5rptw5035c67ur28uz0p4yxpts788dz0
+AGE-SECRET-KEY-1W05P8FG8LMT09SSF7S8223SVWA5U2JDPS42R32X5385C4EMYP9MQCJHFGY

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Témoin</string>
+    <string name="tagline">Film. Encrypt. Upload. Nothing stays on the phone.</string>
+
+    <!-- onboarding -->
+    <string name="onb_title">Connect to a server</string>
+    <string name="onb_body">Every photo and video is encrypted on this phone with the server\'s public key, sent as soon as there is a network, then deleted here. Nobody can view it on the phone — not even you. Only the server operator can decrypt it, offline.</string>
+    <string name="onb_scan">Scan an invitation QR code</string>
+    <string name="onb_manual">Enter an address</string>
+    <string name="onb_url">Server address</string>
+    <string name="onb_connect">Connect</string>
+    <string name="onb_checking">Contacting server…</string>
+    <string name="onb_confirm_title">Trust this server?</string>
+    <string name="onb_confirm_body">Check this fingerprint with the organiser. Your recordings will only ever be readable with this key.</string>
+    <string name="onb_confirm_qr_body">The key matches the QR code. Your recordings will only ever be readable with this key.</string>
+    <string name="trust">Trust</string>
+    <string name="cancel">Cancel</string>
+    <string name="err_key_mismatch">The server\'s key does not match the QR code. Do not use this network.</string>
+    <string name="err_key_changed">The server\'s key has changed since you joined it. Nothing is sent. Ask the organiser before scanning its QR code again.</string>
+    <string name="err_not_server">Not a Témoin server: %1$s</string>
+    <string name="err_bad_qr">This QR code is not a Témoin enrollment code.</string>
+
+    <!-- capture -->
+    <string name="mode_photo">Photo</string>
+    <string name="mode_video">Video</string>
+    <string name="mode_live">Live</string>
+    <string name="live_hint">Continuous: keeps recording with the screen locked, short segments, restarts by itself.</string>
+    <string name="discreet">Dark screen</string>
+    <string name="discreet_hint">Recording · tap 3 times to return</string>
+    <string name="switch_camera">Switch camera</string>
+    <string name="settings">Settings</string>
+    <string name="queue_empty">All sent</string>
+    <string name="queue_pending">%1$d waiting · %2$s</string>
+    <string name="up_uploading">sending…</string>
+    <string name="up_waiting">no network</string>
+    <string name="up_paused">server paused</string>
+    <string name="up_error">retrying</string>
+    <string name="perm_needed">Camera and microphone access are needed to record.</string>
+    <string name="grant">Allow</string>
+    <string name="err_storage">Phone storage almost full: recording stopped.</string>
+    <string name="err_camera">Camera lost. %1$s</string>
+    <string name="sealed_info">%1$d encrypted · unreadable on this phone</string>
+
+    <!-- settings -->
+    <string name="s_server">Server</string>
+    <string name="s_fingerprint">Key fingerprint</string>
+    <string name="s_quality">Video quality</string>
+    <string name="q_720">720p — recommended</string>
+    <string name="q_1080">1080p</string>
+    <string name="q_1080_warn_title">Switch to 1080p?</string>
+    <string name="q_1080_warn">1080p uses about twice the storage and data (≈2.3 GB per hour instead of ≈1.1 GB) and takes twice as long to upload on a busy mobile network. Use it only when you need the detail.</string>
+    <string name="q_1080_blocked">This server only accepts up to %1$dp.</string>
+    <string name="s_camera">Camera</string>
+    <string name="cam_back">Back</string>
+    <string name="cam_front">Front</string>
+    <string name="cam_external">External (USB)</string>
+    <string name="cam_external_help">USB-C (UVC) cameras show up here when your phone supports them (most Android 14+ phones). Bluetooth cannot carry video; Wi-Fi action cams are not supported yet.</string>
+    <string name="s_mic">Microphone</string>
+    <string name="mic_default">Automatic</string>
+    <string name="s_location">Attach location</string>
+    <string name="s_location_help">Adds GPS position inside the encrypted file. Off by default.</string>
+    <string name="s_wifi">Upload on Wi-Fi only</string>
+    <string name="s_queue">Waiting to upload</string>
+    <string name="s_send_now">Send now</string>
+    <string name="s_rejected">%1$d objects refused by the server</string>
+    <string name="s_clear">Clear</string>
+    <string name="s_forget">Forget this server</string>
+    <string name="s_forget_warn">%1$d encrypted objects are still waiting. They can only be sent to this server: forgetting it deletes them.</string>
+    <string name="s_forget_confirm">Forget and delete</string>
+    <string name="s_about">How it works</string>
+    <string name="s_about_body">Media never touches the storage unencrypted: frames are encoded and encrypted in memory, in segments of a few seconds, with the server\'s public key (age / X25519). This phone has no key to decrypt them. Segments are uploaded as soon as possible and deleted after the server confirms them.</string>
+    <string name="back">Back</string>
+    <string name="ok">OK</string>
+
+    <!-- notification -->
+    <string name="notif_channel">Recording</string>
+    <string name="notif_recording">Recording — encrypted</string>
+    <string name="notif_recording_text">Segments are sent automatically.</string>
+    <string name="stop">Stop</string>
+    <string name="onb_invite">Invitation code</string>
+    <string name="err_invite_required">Enter the invitation code given by the organiser.</string>
+    <string name="err_invite_unknown">Unknown invitation code. Check it with the organiser.</string>
+    <string name="err_invite_expired">This invitation has expired. Ask the organiser for a new one.</string>
+    <string name="err_invite_revoked">This invitation has been revoked. Ask the organiser for a new one.</string>
+    <string name="err_invite_exhausted">This invitation has already been used by the maximum number of phones.</string>
+    <string name="err_banned">This phone has been banned from this server.</string>
+    <string name="err_register">Could not join the server: %1$s</string>
+    <string name="up_banned">this phone is banned</string>
+    <string name="up_not_registered">phone unknown to the server</string>
+    <string name="banner_banned">This phone has been banned by the server operator. Nothing is sent; your recordings stay encrypted on the phone in case the ban is lifted.</string>
+    <string name="banner_not_registered">The server no longer knows this phone. Scan a new invitation to join it again.</string>
+    <string name="s_device">My device</string>
+    <string name="s_device_name">Name on the server</string>
+    <string name="s_device_quota">%1$s of %2$s used</string>
+    <string name="s_device_objects">Files received by the server: %1$d</string>
+    <string name="s_device_last">Last upload: %1$s</string>
+    <string name="s_device_never">Nothing sent yet</string>
+    <string name="s_device_offline">Server unreachable — figures from the last connection.</string>
+    <string name="s_device_key">Device key</string>
+    <string name="s_device_help">This phone has its own key for this server. The server only knows this pseudonym, never who you are.</string>
+    <string name="err_no_answer">Wrong address or invitation code: the server did not answer.</string>
+    <string name="flash">Flash</string>
+    <string name="tile_record">Film now</string>
+    <string name="shortcut_record_long">Start filming now</string>
+    <string name="unlock_to_setup">Unlock the phone to set up Témoin.</string>
+    <string name="hb_title">Get my files back</string>
+    <string name="hb_help">Your videos and photos can only be read by the organizer. Ask for them: you get a code to pass on (in person, SMS, Signal…). They will send you, through another channel, a one-time link to save them on any phone, even without this app.</string>
+    <string name="hb_ask">Ask for my files</string>
+    <string name="hb_again">New request</string>
+    <string name="hb_code">Code to give to the organizer</string>
+    <string name="hb_copy">Copy</string>
+    <string name="hb_copied">Code copied</string>
+    <string name="hb_how">The organizer will send you a link. It opens only once: open it on the device where you want to keep the files.</string>
+    <string name="hb_pending">Waiting: the link is not ready yet.</string>
+    <string name="hb_ready">Link ready: the organizer has to send it to you.</string>
+    <string name="hb_opened">Link opened: save the files on the device that opened it.</string>
+    <string name="hb_done">Last link used: files retrieved.</string>
+    <string name="hb_expired">Last link expired without being opened.</string>
+    <string name="hb_revoked">Last link cancelled by the organizer.</string>
+    <string name="hb_valid">Code valid until %1$s</string>
+    <string name="hb_failed">Request failed: %1$s</string>
+</resources>
