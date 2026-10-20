@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
-<title>Fichiers</title>
+<title>Files</title>
 <style>
   :root { color-scheme: light dark; --bg:#0f1115; --card:#181b21; --fg:#ececee; --muted:#9aa0a6; --line:#2a2e36; --accent:#e5484d; --ok:#30a46c; }
   @media (prefers-color-scheme: light) { :root { --bg:#f4f4f5; --card:#fff; --fg:#16181d; --muted:#5f6368; --line:#e4e4e7; } }
@@ -80,6 +80,7 @@ const T = FR ? {
     corrupt: 'Fichier altéré : déchiffrement refusé.',
     too_big: 'Plus de 4 Go : trop volumineux pour un seul zip. Demandez à l’organisateur de découper l’envoi.',
     unsupported: 'Ce navigateur est trop ancien pour déchiffrer les fichiers. Utilisez Safari, Chrome ou Firefox à jour.',
+    insecure: 'Ce lien doit être ouvert en https:// pour pouvoir déchiffrer les fichiers.',
   },
 } : {
   loading: 'Loading…',
@@ -107,9 +108,11 @@ const T = FR ? {
     corrupt: 'File altered: decryption refused.',
     too_big: 'Over 4 GB: too large for a single zip. Ask the organizer to split it.',
     unsupported: 'This browser is too old to decrypt the files. Use an up-to-date Safari, Chrome or Firefox.',
+    insecure: 'This link has to be opened over https:// to decrypt the files.',
   },
 };
 document.documentElement.lang = FR ? 'fr' : 'en';
+document.title = FR ? 'Fichiers' : 'Files';
 
 const CHUNK = 1 << 20, TAG = 16, CT = CHUNK + TAG;
 const id = location.pathname.split('/')[2] || '';
@@ -300,6 +303,8 @@ async function openShare() {
 
 async function start() {
   status(T.loading);
+  // Browsers only expose WebCrypto on https:// (or localhost).
+  if (!window.isSecureContext) return fail('insecure');
   if (!window.crypto || !crypto.subtle || !window.fetch) return fail('unsupported');
   if (!fragment) return fail('no_key');
   try {

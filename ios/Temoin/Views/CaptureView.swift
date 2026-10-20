@@ -95,7 +95,7 @@ struct CaptureView: View {
                     HStack(spacing: 8) {
                         ForEach(CaptureMode.allCases, id: \.self) { m in
                             Button { engine.setMode(m) } label: {
-                                Text(LocalizedStringKey("mode_\(m.rawValue)")).textCase(.uppercase).font(.subheadline.weight(engine.mode == m ? .bold : .medium))
+                                Text(LocalizedStringKey("mode_" + m.rawValue)).textCase(.uppercase).font(.subheadline.weight(engine.mode == m ? .bold : .medium))
                                     .foregroundStyle(engine.mode == m ? (m == .photo ? .white : accent) : muted)
                                     .padding(.horizontal, 14).padding(.vertical, 8)
                             }

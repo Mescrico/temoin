@@ -52,7 +52,13 @@ Un téléphone arraché en plein tournage ne perd que les 2 à 4 dernières seco
 |---|---|---|
 | ![Appli de bureau](docs/images/desktop.png) | ![Administration](docs/images/admin.png) | ![Page du lien](docs/images/handback.png) |
 
-Les captures du téléphone et une courte vidéo de démo arrivent avec la première version publique des apps renommées.
+**Sur le téléphone**
+
+| Raccourci de l'écran verrouillé : ça filme | Rejoindre un serveur : vérifier sa clé | Récupérer ses fichiers | Le lien à usage unique |
+|---|---|---|---|
+| <img src="docs/images/phone-record.gif" width="200" alt="iPhone : raccourci de l'écran verrouillé, puis l'enregistrement démarre"> | <img src="docs/images/phone-join.png" width="200" alt="Fenêtre « Faire confiance à ce serveur ? »"> | <img src="docs/images/phone-files-back.png" width="200" alt="Réglages avec un code à donner à l'organisateur"> | <img src="docs/images/phone-link.png" width="200" alt="Page de téléchargement à usage unique"> |
+
+La première animation vient d'un vrai iPhone (version précédente, en français) ; les autres écrans viennent de l'émulateur Android (en anglais).
 
 ## Contenu du dépôt
 

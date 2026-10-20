@@ -59,7 +59,13 @@ A phone snatched mid-recording loses only the last 2–4 seconds.
 |---|---|---|
 | ![Desktop app](docs/images/desktop.png) | ![Admin](docs/images/admin.png) | ![Hand-back page](docs/images/handback.png) |
 
-Phone screenshots and a short demo video are coming with the first public build of the renamed apps.
+**On the phone**
+
+| Lock-screen shortcut: filming starts | Joining a server: check its key | Getting your files back | The one-time link |
+|---|---|---|---|
+| <img src="docs/images/phone-record.gif" width="200" alt="iPhone: lock-screen shortcut, then recording starts"> | <img src="docs/images/phone-join.png" width="200" alt="Trust this server dialog"> | <img src="docs/images/phone-files-back.png" width="200" alt="Settings with a code to give to the organizer"> | <img src="docs/images/phone-link.png" width="200" alt="One-time download page"> |
+
+The first clip is a real iPhone (earlier build, French interface); the other screens come from the Android emulator.
 
 ## What's in this repository
 
