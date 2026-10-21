@@ -155,6 +155,18 @@ def metadata(path, version):
     else:
         print("review notes:", "ok" if r is not None else "FAILED")
 
+    # TestFlight test information (public beta): description and privacy URL per language,
+    # review notes. Feedback e-mail and review contact are personal: entered in App Store Connect.
+    blocs = {l["attributes"]["locale"]: l for l in call("GET", f"/apps/{app_id}/betaAppLocalizations")["data"]}
+    beta = {loc: {"description": meta["store"][loc]["description"], "privacyPolicyUrl": meta["info"][loc]["privacyPolicyUrl"],
+                  "marketingUrl": meta["store"][loc]["marketingUrl"]} for loc in meta["store"]}
+    upsert_localizations(blocs, beta, "betaAppLocalizations", "apps", app_id, "app")
+    bdetail = call("GET", f"/apps/{app_id}/betaAppReviewDetail", soft=True)
+    if bdetail and bdetail.get("data"):
+        r = call("PATCH", f"/betaAppReviewDetails/{bdetail['data']['id']}", {"data": {"type": "betaAppReviewDetails",
+                 "id": bdetail["data"]["id"], "attributes": {"notes": meta["reviewNotes"], "demoAccountRequired": False}}}, soft=True)
+        print("TestFlight review notes:", "ok" if r is not None else "FAILED")
+
     if FAILURES:
         print(f"\n{len(FAILURES)} step(s) failed:")
         for f in FAILURES:
