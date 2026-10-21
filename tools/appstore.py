@@ -78,7 +78,8 @@ def upsert_localizations(existing, wanted, kind, parent_type, parent_id, parent_
 # Age rating answers for an app with no objectionable content: every level "NONE", every yes/no "false".
 AGE_BOOLEANS = {"gambling", "unrestrictedWebAccess", "lootBox", "advertising", "ageAssurance", "healthOrWellnessTopics",
                 "messagingAndChat", "parentalControls", "userGeneratedContent", "seventeenPlus"}
-AGE_SKIP = {"kidsAgeBand", "ageRatingOverride", "ageRatingOverrideV2", "koreaAgeRatingOverride", "developerAgeRatingInfoUrl"}
+AGE_SKIP = {"kidsAgeBand", "ageRatingOverride", "ageRatingOverrideV2", "koreaAgeRatingOverride", "developerAgeRatingInfoUrl",
+            "gracRatingClassificationNumber"}
 
 
 def metadata(path, version):
@@ -104,7 +105,8 @@ def metadata(path, version):
 
     decl = call("GET", f"/appInfos/{info['id']}/ageRatingDeclaration", soft=True)
     if decl and decl.get("data"):
-        attrs = {k: (False if k in AGE_BOOLEANS else "NONE") for k in decl["data"]["attributes"] if k not in AGE_SKIP}
+        attrs = {k: (False if k in AGE_BOOLEANS else "NONE") for k in decl["data"]["attributes"]
+                 if k not in AGE_SKIP and not k.endswith(("Override", "Url", "Number"))}
         # Apple keeps adding questions: when it says an attribute is a BOOLEAN, answer "false" and retry.
         for _ in range(4):
             r = call("PATCH", f"/ageRatingDeclarations/{decl['data']['id']}",
@@ -147,7 +149,11 @@ def metadata(path, version):
         r = call("POST", "/appStoreReviewDetails", {"data": {"type": "appStoreReviewDetails",
                  "attributes": {"notes": meta["reviewNotes"], "demoAccountRequired": False},
                  "relationships": {"appStoreVersion": {"data": {"type": "appStoreVersions", "id": ver["id"]}}}}}, soft=True)
-    print("review notes:", "ok" if r is not None else "FAILED")
+    if r is None and "contactFirstName" in FAILURES[-1]:
+        FAILURES.pop()
+        print("review notes: skipped (enter the review contact once in App Store Connect, then run again)")
+    else:
+        print("review notes:", "ok" if r is not None else "FAILED")
 
     if FAILURES:
         print(f"\n{len(FAILURES)} step(s) failed:")
