@@ -96,7 +96,10 @@ sr decrypt -i identity.txt -d ./data -o ./out --remux       # photos .jpg, video
 
 1. In the app, the person taps **Get my files back** and passes you the short code (`K7F3-QX9M`) by any channel. The code is random and only shown on their phone.
 2. `/admin` shows which device it belongs to.
-3. On the computer holding the key (desktop app: **Give files back**; command line below):
+3. Create the link, in one of three ways:
+   - **From `/admin`**: **Create the link** on the request's line, then choose the private key file (and its passphrase if it is protected). The browser downloads the encrypted recordings, decrypts and re-encrypts them itself: the key file is never sent to the server.
+   - **Desktop app**: **Give files back**.
+   - **Command line**, on the computer holding the key:
    ```bash
    sr share -i identity.txt -d ./data --code K7F3-QX9M --server https://your-server --token-file token.txt --days 7 --clipboard
    ```

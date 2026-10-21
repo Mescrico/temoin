@@ -51,7 +51,7 @@ A phone snatched mid-recording loses only the last 2–4 seconds.
 - **Encryption**: standard [age](https://age-encryption.org) v1 files (X25519, ChaCha20-Poly1305). Anything you store can also be decrypted with the official `age` tool.
 - **No accounts**: each phone joins by scanning an invitation QR and gets its own Ed25519 key. The server only knows a pseudonym (“Phone #37”), can ban a device, never knows who is who.
 - **Tamper-evident**: every stored object is recorded in a hash-chained ledger (`sr verify`).
-- **Hand-back**: a person asks for their files in the app and gets a short code; the organizer turns it into a one-time link. The files are re-encrypted with a fresh key that only exists in the link (`/r/<id>#<key>`): the server never sees it. The recipient gets a `.zip` in any browser, no app needed.
+- **Hand-back**: a person asks for their files in the app and gets a short code; the organizer turns it into a one-time link, from the admin page or the desktop app. The files are re-encrypted with a fresh key that only exists in the link (`/r/<id>#<key>`): the server never sees it. The recipient gets a `.zip` in any browser, no app needed.
 - **Nothing is ever deleted** on the server: handed-back recordings are moved aside and stop counting against the device quota.
 
 ## Screenshots

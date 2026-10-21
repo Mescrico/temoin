@@ -255,6 +255,9 @@ pub fn router(state: Arc<AppState>) -> Router {
         .route("/api/v1/admin/events", get(admin_events))
         .route("/api/v1/admin/requests", get(admin_requests))
         .route("/api/v1/admin/requests/{code}", get(admin_request))
+        .route("/api/v1/admin/requests/{code}/objects", get(admin_request_objects))
+        .route("/api/v1/admin/objects/{session}/{seq}", get(admin_object))
+        .route("/api/v1/admin/handback.js", get(admin_handback_js))
         .route("/api/v1/admin/requests/{code}/cancel", post(admin_cancel_request))
         .route("/api/v1/admin/shares", post(admin_create_share))
         .route(
@@ -1122,6 +1125,56 @@ async fn admin_request(
     Ok(Json(admin_request_json(&st, &l, &r, &all)))
 }
 
+/// The encrypted objects of the device behind a hand-back request, for an operator who
+/// decrypts them in the browser: the private key never reaches the server, which only
+/// serves ciphertext it cannot read. Built from the verified ledger.
+async fn admin_request_objects(
+    State(st): State<Arc<AppState>>,
+    headers: HeaderMap,
+    Path(code): Path<String>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    admin_guard(&st, &headers)?;
+    let r = st.shares.request(&code).ok_or_else(|| ApiError::new(StatusCode::NOT_FOUND, "not_found", "unknown request code"))?;
+    let path = st.cfg.data_dir.join("ledger.jsonl");
+    let entries = tokio::task::spawn_blocking(move || crate::ledger::verify_file(&path))
+        .await
+        .map_err(|e| ApiError::new(StatusCode::INTERNAL_SERVER_ERROR, "internal", e.to_string()))?
+        .map_err(|e| ApiError::new(StatusCode::INTERNAL_SERVER_ERROR, "ledger", format!("{e:#}")))?;
+    let mine: Vec<_> = entries.iter().filter(|e| e.device == r.device_id).collect();
+    Ok(Json(json!({
+        "code": shares::display_code(&r.code),
+        "device_id": r.device_id,
+        "cancelled": r.cancelled,
+        "upto_index": mine.iter().map(|e| e.index).max(),
+        "objects": mine.iter().map(|e| json!({ "index": e.index, "session": e.session, "seq": e.seq, "size": e.size })).collect::<Vec<_>>(),
+    })))
+}
+
+/// One stored object, still encrypted (from `objects/` or, once handed back, `returned/`).
+async fn admin_object(
+    State(st): State<Arc<AppState>>,
+    headers: HeaderMap,
+    Path((session, seq)): Path<(String, u32)>,
+) -> Result<Response, ApiError> {
+    admin_guard(&st, &headers)?;
+    if !valid_session(&session) {
+        return Err(ApiError::new(StatusCode::BAD_REQUEST, "bad_session", "invalid session"));
+    }
+    let stored = st.objects_dir.join(&session[..2]).join(&session).join(format!("{seq:06}.age"));
+    let returned = st.returned.lock().unwrap().path_of(&session, seq);
+    let bytes = match tokio::fs::read(&stored).await {
+        Ok(b) => b,
+        Err(_) => tokio::fs::read(&returned)
+            .await
+            .map_err(|_| ApiError::new(StatusCode::NOT_FOUND, "not_found", "no such object"))?,
+    };
+    let mut r = bytes.into_response();
+    let h = r.headers_mut();
+    h.insert(header::CONTENT_TYPE, header::HeaderValue::from_static("application/octet-stream"));
+    h.insert(header::CACHE_CONTROL, header::HeaderValue::from_static("no-store"));
+    Ok(r)
+}
+
 async fn admin_cancel_request(State(st): State<Arc<AppState>>, headers: HeaderMap, Path(code): Path<String>) -> Result<Response, ApiError> {
     admin_guard(&st, &headers)?;
     if !st.shares.cancel_request(&code).map_err(share_error)? {
@@ -1221,3 +1274,12 @@ fn html_escape(s: &str) -> String {
 const SHARE_HTML: &str = include_str!("../web/share.html");
 const LANDING_HTML: &str = include_str!("../web/landing.html");
 const ADMIN_HTML: &str = include_str!("../web/admin.html");
+/// Browser hand-back (built from tools/handback-web), loaded by the admin page on demand.
+const HANDBACK_JS: &str = include_str!("../web/handback.js");
+
+async fn admin_handback_js(State(st): State<Arc<AppState>>, headers: HeaderMap) -> Result<Response, ApiError> {
+    admin_guard(&st, &headers)?;
+    let mut r = HANDBACK_JS.into_response();
+    r.headers_mut().insert(header::CONTENT_TYPE, header::HeaderValue::from_static("text/javascript; charset=utf-8"));
+    Ok(r)
+}

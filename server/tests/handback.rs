@@ -161,6 +161,21 @@ async fn hand_back_link() {
     assert_eq!(send(&app, admin("GET", "/api/v1/admin/requests/ZZZZZZZZ", serde_json::Value::Null)).await.0, StatusCode::NOT_FOUND);
     assert_eq!(send(&app, claimed("GET", &lookup, None)).await.0, StatusCode::UNAUTHORIZED);
 
+    // Browser hand-back: the admin page lists the device's encrypted objects and fetches
+    // them as stored (ciphertext only; the key stays in the operator's browser).
+    let (s, list) = send(&app, admin("GET", &format!("{lookup}/objects"), serde_json::Value::Null)).await;
+    assert_eq!(s, StatusCode::OK, "{list}");
+    assert_eq!(list["device_id"], phone.id.as_str());
+    assert_eq!(list["objects"].as_array().unwrap().len(), 1);
+    assert_eq!(list["objects"][0]["session"], "handback_sess1");
+    assert_eq!(list["upto_index"], 0);
+    let (s, got) = send_raw(&app, admin("GET", "/api/v1/admin/objects/handback_sess1/0", serde_json::Value::Null)).await;
+    assert_eq!(s, StatusCode::OK);
+    assert_eq!(got, obj, "served exactly as stored");
+    assert_eq!(send(&app, claimed("GET", "/api/v1/admin/objects/handback_sess1/0", None)).await.0, StatusCode::UNAUTHORIZED);
+    assert_eq!(send(&app, admin("GET", "/api/v1/admin/objects/handback_sess1/9", serde_json::Value::Null)).await.0, StatusCode::NOT_FOUND);
+    assert_eq!(send(&app, admin("GET", "/api/v1/admin/objects/..%2F..%2Fetc/0", serde_json::Value::Null)).await.0, StatusCode::BAD_REQUEST);
+
     // sr share: fresh key, upload in parts, seal.
     let k = sharecrypt::new_key();
     let manifest = br#"{"v":1,"files":[{"name":"a.mp4","type":"video/mp4"}]}"#.to_vec();

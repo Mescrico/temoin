@@ -44,7 +44,7 @@ Un téléphone arraché en plein tournage ne perd que les 2 à 4 dernières seco
 - **Chiffrement** : fichiers [age](https://age-encryption.org) v1 standard (X25519, ChaCha20-Poly1305), déchiffrables aussi avec l'outil `age` officiel.
 - **Pas de comptes** : chaque téléphone rejoint le serveur en scannant un QR d'invitation et crée sa propre clé Ed25519. Le serveur ne connaît qu'un pseudonyme (« Phone #37 »), peut le bannir, ne sait jamais qui est qui.
 - **Infalsifiable** : chaque objet reçu est inscrit dans un registre chaîné par hash (`sr verify`).
-- **Restitution** : la personne demande ses fichiers dans l'app et obtient un code court ; l'organisateur en fait un lien à usage unique. Les fichiers sont rechiffrés avec une clé neuve qui n'existe que dans le lien (`/r/<id>#<clé>`) : le serveur ne la voit jamais. La personne récupère un `.zip` dans n'importe quel navigateur, sans l'app.
+- **Restitution** : la personne demande ses fichiers dans l'app et obtient un code court ; l'organisateur en fait un lien à usage unique, depuis la page d'administration ou l'appli de bureau. Les fichiers sont rechiffrés avec une clé neuve qui n'existe que dans le lien (`/r/<id>#<clé>`) : le serveur ne la voit jamais. La personne récupère un `.zip` dans n'importe quel navigateur, sans l'app.
 - **Rien n'est jamais supprimé** du serveur : les enregistrements rendus sont mis de côté et ne comptent plus dans le quota de l'appareil.
 
 ## Captures

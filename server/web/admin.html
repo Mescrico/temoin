@@ -46,6 +46,11 @@
   .bar i { display:block; height:100%; background:var(--ok); }
   .s2 { color:var(--ok); } .s4, .s5 { color:var(--accent); }
   a.link { color:inherit; text-decoration:underline dotted; cursor:pointer; }
+  .modal { position:fixed; inset:0; background:rgba(0,0,0,.55); display:flex; align-items:flex-start; justify-content:center; padding:6vh 16px; z-index:10; overflow-y:auto; }
+  .modal .card { width:min(560px,100%); margin:0; }
+  .progress { height:8px; background:var(--line); border-radius:4px; overflow:hidden; }
+  .progress i { display:block; height:100%; width:0; background:var(--ok); transition:width .2s; }
+  .err { color:var(--accent); }
 </style>
 </head>
 <body data-stealth="{{STEALTH}}" data-name="{{NAME}}">
@@ -156,6 +161,36 @@
     </div>
   </div>
 </main>
+<div class="modal hidden" id="hb">
+  <div class="card">
+    <h2 id="hb-title"></h2>
+    <div id="hb-form">
+      <p class="muted" style="margin-top:0" data-i18n-html="hbIntro"></p>
+      <div class="form" style="grid-template-columns:1fr">
+        <label class="f"><span data-i18n="hbKey"></span><input type="file" id="hb-key"></label>
+        <label class="f hidden" id="hb-pass-row"><span data-i18n="hbPass"></span><input type="password" id="hb-pass" autocomplete="off"></label>
+        <label class="f"><span data-i18n="hbDays"></span>
+          <select id="hb-days"><option value="1" data-i18n="hbD1"></option><option value="3" data-i18n="hbD3"></option><option value="7" selected data-i18n="hbD7"></option><option value="30" data-i18n="hbD30"></option></select></label>
+      </div>
+      <p class="err" id="hb-err"></p>
+      <div class="row" style="justify-content:flex-end"><button class="ghost" id="hb-cancel" data-i18n="close"></button><button id="hb-go" data-i18n="hbCreate"></button></div>
+    </div>
+    <div id="hb-work" class="hidden">
+      <p id="hb-step"></p>
+      <div class="progress"><i id="hb-bar"></i></div>
+      <p class="muted" data-i18n="hbKeep"></p>
+    </div>
+    <div id="hb-done" class="hidden">
+      <p data-i18n="hbReady"></p>
+      <div class="qrbox"><div class="qr" id="hb-qr"></div>
+        <div style="flex:1;min-width:200px"><code id="hb-link" style="font-size:.85rem"></code>
+          <div class="row" style="margin-top:10px"><button id="hb-copy" class="small" data-i18n="copy"></button></div>
+          <p class="muted" id="hb-files"></p>
+          <p class="muted" data-i18n="hbSend"></p></div></div>
+      <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="ghost" id="hb-close" data-i18n="close"></button></div>
+    </div>
+  </div>
+</div>
 <script>
 // English by default, French for French browsers; ?lang=en|fr forces one.
 const LANG = (() => {
@@ -187,7 +222,7 @@ const STR = {
     banned: 'banned', ban: 'Ban', unban: 'Unban', noDevices: 'No device registered.',
     banConfirm: (n) => `Ban “${n}”? It will not be able to send anything.`, renamePrompt: 'New name (only visible here):',
     handbackTitle: 'Give someone their files back',
-    handbackIntro: 'The person taps <strong>Get my files back</strong> in the app (Settings) and passes you the code shown, through any channel. On the computer holding the private key: <strong>Give files back</strong> in the desktop app, or <code>sr share --code CODE</code> → one-time link (and QR code) to send them through another channel. The server only receives files re-encrypted with a key it never sees.',
+    handbackIntro: 'The person taps <strong>Get my files back</strong> in the app (Settings) and passes you the code shown, through any channel. Then <strong>Create the link</strong> on its line below (your key file stays in this browser), or on a computer: <strong>Give files back</strong> in the desktop app, <code>sr share --code CODE</code> → one-time link (and QR code) to send them through another channel. The server only receives files re-encrypted with a key it never sees.',
     codeSearchPh: 'Code received (e.g. K7F3-QX9M)',
     colCode: 'Code', colDevice: 'Device', colRequested: 'Requested', colOnServer: 'Files on the server', colLink: 'Link',
     stUploading: 'uploading', stReady: 'link ready', stOpened: 'opened', stDone: 'retrieved', stExpired: 'expired', stRevoked: 'revoked',
@@ -195,6 +230,18 @@ const STR = {
     cancelled: 'cancelled', unknownCode: 'unknown code', revokeLink: 'Revoke the link', cancel: 'Cancel', noRequests: 'No request yet.',
     revokeLinkConfirm: 'Revoke this link? It will stop working (nothing is deleted: the copy goes to the archive).',
     cancelConfirm: 'Cancel this request? No link can be created with this code.',
+    createLink: 'Create the link', close: 'Close', copy: 'Copy', copied: 'Copied',
+    hbTitle: (c, n) => `Link for ${n} (${c})`,
+    hbIntro: 'Choose the server’s private key file. It is read by this browser only and never sent: the browser decrypts the recordings, re-encrypts them with a fresh key and uploads only that.',
+    hbKey: 'Private key file (identity.txt, or the copy saved by the desktop app)', hbPass: 'Passphrase of this key file', hbDays: 'The link stays valid for',
+    hbD1: '1 day', hbD3: '3 days', hbD7: '7 days', hbD30: '30 days', hbCreate: 'Create the link',
+    hbNoKey: 'Choose the key file first.', hbNeedPass: 'This key file is protected: enter its passphrase.', hbWrongPass: 'Wrong passphrase.',
+    hbWrongKey: 'This key does not open these recordings (another server’s key?).',
+    hbDecrypt: (d, t) => `Decrypting ${d} / ${t}…`, hbVideo: 'Putting the videos together…', hbUpload: (d, t) => `Uploading ${d} / ${t}…`,
+    hbKeep: 'Keep this tab open until the link appears.',
+    hbReady: 'The link is ready. It opens once: send it through another channel than the code (Signal, or show the QR code in person).',
+    hbFiles: (n, s) => `${n} file(s), ${s}`, hbIncomplete: 'incomplete',
+    hbSend: 'The link is shown only now: it is not stored anywhere.',
     journal: 'Journal', uploadsOnly: 'uploads only',
     journalIntro: 'Request metadata only (never the content). Full files: <code>logs/events-YYYY-MM-DD.jsonl</code>.',
     colTime: 'Time', colRequest: 'Request', colSize: 'Size', colDetail: 'Detail',
@@ -225,7 +272,7 @@ const STR = {
     banned: 'banni', ban: 'Bannir', unban: 'Débannir', noDevices: 'Aucun appareil inscrit.',
     banConfirm: (n) => `Bannir « ${n} » ? Il ne pourra plus rien envoyer.`, renamePrompt: 'Nouveau nom (visible seulement ici) :',
     handbackTitle: 'Rendre ses fichiers à quelqu’un',
-    handbackIntro: 'La personne appuie sur <strong>Récupérer mes fichiers</strong> dans l’app (Réglages) et vous transmet le code affiché, par n’importe quel canal. Sur l’ordinateur qui détient la clé privée : <strong>Rendre ses fichiers</strong> dans l’appli de bureau, ou <code>sr share --code CODE</code> → lien à usage unique (et QR) à lui envoyer par un autre canal. Le serveur ne reçoit que des fichiers rechiffrés avec une clé qu’il ne voit jamais.',
+    handbackIntro: 'La personne appuie sur <strong>Récupérer mes fichiers</strong> dans l’app (Réglages) et vous transmet le code affiché, par n’importe quel canal. Ensuite <strong>Créer le lien</strong> sur sa ligne ci-dessous (votre fichier de clé reste dans ce navigateur), ou sur un ordinateur : <strong>Rendre ses fichiers</strong> dans l’appli de bureau, <code>sr share --code CODE</code> → lien à usage unique (et QR) à lui envoyer par un autre canal. Le serveur ne reçoit que des fichiers rechiffrés avec une clé qu’il ne voit jamais.',
     codeSearchPh: 'Code reçu (ex. K7F3-QX9M)',
     colCode: 'Code', colDevice: 'Appareil', colRequested: 'Demandé', colOnServer: 'Fichiers sur le serveur', colLink: 'Lien',
     stUploading: 'envoi en cours', stReady: 'lien prêt', stOpened: 'ouvert', stDone: 'récupéré', stExpired: 'expiré', stRevoked: 'révoqué',
@@ -233,6 +280,18 @@ const STR = {
     cancelled: 'annulée', unknownCode: 'code inconnu', revokeLink: 'Révoquer le lien', cancel: 'Annuler', noRequests: 'Aucune demande pour l’instant.',
     revokeLinkConfirm: 'Révoquer ce lien ? Il ne fonctionnera plus (rien n’est supprimé : la copie part dans les archives).',
     cancelConfirm: 'Annuler cette demande ? Aucun lien ne pourra être créé avec ce code.',
+    createLink: 'Créer le lien', close: 'Fermer', copy: 'Copier', copied: 'Copié',
+    hbTitle: (c, n) => `Lien pour ${n} (${c})`,
+    hbIntro: 'Choisissez le fichier de clé privée du serveur. Il est lu par ce navigateur seulement et n’est jamais envoyé : le navigateur déchiffre les enregistrements, les rechiffre avec une clé neuve et n’envoie que ça.',
+    hbKey: 'Fichier de clé privée (identity.txt, ou la copie enregistrée par l’appli de bureau)', hbPass: 'Phrase de passe de ce fichier de clé', hbDays: 'Le lien reste valable',
+    hbD1: '1 jour', hbD3: '3 jours', hbD7: '7 jours', hbD30: '30 jours', hbCreate: 'Créer le lien',
+    hbNoKey: 'Choisissez d’abord le fichier de clé.', hbNeedPass: 'Ce fichier de clé est protégé : saisissez sa phrase de passe.', hbWrongPass: 'Phrase de passe incorrecte.',
+    hbWrongKey: 'Cette clé n’ouvre pas ces enregistrements (clé d’un autre serveur ?).',
+    hbDecrypt: (d, t) => `Déchiffrement ${d} / ${t}…`, hbVideo: 'Assemblage des vidéos…', hbUpload: (d, t) => `Envoi ${d} / ${t}…`,
+    hbKeep: 'Gardez cet onglet ouvert jusqu’à ce que le lien apparaisse.',
+    hbReady: 'Le lien est prêt. Il ne s’ouvre qu’une fois : envoyez-le par un autre canal que le code (Signal, ou montrez le QR en vrai).',
+    hbFiles: (n, s) => `${n} fichier(s), ${s}`, hbIncomplete: 'incomplet',
+    hbSend: 'Le lien n’est affiché que maintenant : il n’est enregistré nulle part.',
     journal: 'Journal', uploadsOnly: 'envois uniquement',
     journalIntro: 'Métadonnées des requêtes uniquement (jamais le contenu). Fichiers complets : <code>logs/events-AAAA-MM-JJ.jsonl</code>.',
     colTime: 'Heure', colRequest: 'Requête', colSize: 'Taille', colDetail: 'Détail',
@@ -406,7 +465,9 @@ async function refreshRequests() {
   $('requests').innerHTML = rows.filter((r) => !q || r.key.startsWith(q)).map((r) => {
     const actions = live(r.share)
       ? `<button class="small danger" data-revoke-share="${r.share.id}">${t('revokeLink')}</button>`
-      : (r.key && !r.cancelled && !r.share ? `<button class="small ghost" data-cancel="${r.key}">${t('cancel')}</button>` : '');
+      : (r.key && !r.cancelled && !r.share
+        ? `<button class="small" data-handback="${r.key}" data-name="${esc(r.device_name || '')}">${t('createLink')}</button> <button class="small ghost" data-cancel="${r.key}">${t('cancel')}</button>`
+        : '');
     return `<tr${match && match === r ? ' style="outline:2px solid var(--ok)"' : ''}><td><span class="code" style="font-size:1rem">${esc(r.code)}</span></td>`
       + `<td>${esc(r.device_name || '')}${r.banned ? ` <span class="pill off">${t('banned')}</span>` : ''}${r.cancelled ? ` <span class="pill off">${t('cancelled')}</span>` : ''}</td>`
       + `<td>${fmtDate(r.created_at)}</td>`
@@ -418,12 +479,86 @@ async function refreshRequests() {
     await api(`/api/v1/admin/shares/${b.dataset.revokeShare}/revoke`, { method: 'POST' });
     refreshRequests();
   });
+  document.querySelectorAll('[data-handback]').forEach((b) => b.onclick = () => openHandback(b.dataset.handback, b.dataset.name));
   document.querySelectorAll('[data-cancel]').forEach((b) => b.onclick = async () => {
     if (!confirm(t('cancelConfirm'))) return;
     await api(`/api/v1/admin/requests/${b.dataset.cancel}/cancel`, { method: 'POST' });
     refreshRequests();
   });
 }
+
+// ---- Hand-back from this page: the key file is read here and never leaves the browser.
+let handbackLib = null;
+async function loadHandback() {
+  if (handbackLib) return handbackLib;
+  const r = await fetch('/api/v1/admin/handback.js', { headers: { Authorization: 'Bearer ' + token } });
+  if (!r.ok) throw new Error(r.statusText);
+  const url = URL.createObjectURL(new Blob([await r.text()], { type: 'text/javascript' }));
+  await new Promise((ok, ko) => { const s = document.createElement('script'); s.src = url; s.onload = ok; s.onerror = ko; document.head.appendChild(s); });
+  URL.revokeObjectURL(url);
+  return (handbackLib = window.TemoinHandback);
+}
+let hbBusy = false;
+function hbShow(part) { ['hb-form', 'hb-work', 'hb-done'].forEach((id) => $(id).classList.toggle('hidden', id !== part)); }
+function closeHandback() {
+  if (hbBusy) return;
+  $('hb').classList.add('hidden');
+  $('hb-key').value = ''; $('hb-pass').value = ''; $('hb-link').textContent = ''; $('hb-qr').innerHTML = '';
+}
+async function openHandback(code, name) {
+  $('hb-title').textContent = t('hbTitle', code.replace(/^(.{4})/, '$1-'), name || '?');
+  $('hb-err').textContent = '';
+  $('hb-pass-row').classList.add('hidden');
+  hbShow('hb-form');
+  $('hb').classList.remove('hidden');
+  $('hb-key').onchange = async () => {
+    const f = $('hb-key').files[0];
+    if (!f) return;
+    const lib = await loadHandback().catch(() => null);
+    if (lib) $('hb-pass-row').classList.toggle('hidden', !lib.isProtected(new Uint8Array(await f.slice(0, 32).arrayBuffer())));
+  };
+  $('hb-go').onclick = async () => {
+    const f = $('hb-key').files[0];
+    if (!f) { $('hb-err').textContent = t('hbNoKey'); return; }
+    $('hb-err').textContent = '';
+    hbBusy = true;
+    hbShow('hb-work');
+    $('hb-step').textContent = '…';
+    $('hb-bar').style.width = '0';
+    try {
+      const lib = await loadHandback();
+      const keyFile = new Uint8Array(await f.arrayBuffer());
+      const res = await lib.handBack({
+        code, keyFile, passphrase: $('hb-pass').value, days: Number($('hb-days').value), token,
+        onProgress: ({ step, done, total }) => {
+          $('hb-step').textContent = step === 'decrypt' ? t('hbDecrypt', done + 1, total) : step === 'video' ? t('hbVideo') : t('hbUpload', fmtBytes(done), fmtBytes(total));
+          $('hb-bar').style.width = (step === 'decrypt' ? 60 * done / total : step === 'video' ? 60 : 60 + 40 * done / total) + '%';
+        },
+      });
+      keyFile.fill(0);
+      $('hb-key').value = '';
+      $('hb-pass').value = '';
+      $('hb-link').textContent = res.link;
+      $('hb-qr').innerHTML = lib.qrSvg(res.link);
+      const size = res.files.reduce((n, x) => n + x.size, 0);
+      $('hb-files').textContent = t('hbFiles', res.files.length, fmtBytes(size)) + (res.files.some((x) => !x.complete) ? ' · ' + t('hbIncomplete') : '');
+      $('hb-copy').textContent = t('copy');
+      $('hb-copy').onclick = async () => { await navigator.clipboard.writeText(res.link); $('hb-copy').textContent = t('copied'); };
+      hbShow('hb-done');
+      refreshRequests().catch(() => {});
+    } catch (e) {
+      const c = e && e.code;
+      $('hb-err').textContent = c === 'passphrase_required' ? t('hbNeedPass') : c === 'wrong_passphrase' ? t('hbWrongPass')
+        : c === 'wrong_key' ? t('hbWrongKey') : t('error') + ((e && e.message) || e);
+      if (c === 'passphrase_required') $('hb-pass-row').classList.remove('hidden');
+      hbShow('hb-form');
+    } finally {
+      hbBusy = false;
+    }
+  };
+}
+$('hb-cancel').onclick = closeHandback;
+$('hb-close').onclick = closeHandback;
 
 async function refreshAll() {
   await Promise.all([refreshStats(), refreshDevices()]);

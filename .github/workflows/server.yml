@@ -3,9 +3,9 @@ name: Server
 on:
   push:
     branches: [main]
-    paths: ['server/**', '.github/workflows/server.yml']
+    paths: ['server/**', 'tools/handback-web/**', '.github/workflows/server.yml']
   pull_request:
-    paths: ['server/**', '.github/workflows/server.yml']
+    paths: ['server/**', 'tools/handback-web/**', '.github/workflows/server.yml']
   workflow_dispatch:
 
 concurrency:
@@ -30,3 +30,19 @@ jobs:
       - run: cargo clippy --locked --all-targets -- -D warnings
       - name: Docker image builds
         run: docker build -t temoin-server:ci .
+
+  handback-web:
+    # The admin page's hand-back module: tests against vectors sealed by `sr`, and the
+    # bundle served by the server must be exactly what the sources build.
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/handback-web
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm test
+      - run: npm run build && git diff --exit-code ../../server/web/handback.js

@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.4
+
+- **Give files back from the admin page**: *Create the link* on a request's line, choose the private key file (and its passphrase). The browser downloads the encrypted recordings, decrypts them, turns Android videos into MP4, re-encrypts everything with a fresh key and uploads it; the key file never leaves the browser. See the [threat model](docs/THREAT-MODEL.md) for the remaining risk.
+- Server: admin routes to list and download a request's encrypted objects.
+
 ## v0.1.3
 
 - iOS: iPhone only for the App Store release (iPad support may come back later).
