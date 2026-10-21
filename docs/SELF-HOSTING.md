@@ -14,7 +14,7 @@ Phones need **HTTPS** to reach the server. Section [Reaching the server](#reachi
 
 ## 1. Windows home PC (desktop app)
 
-1. Download `Témoin Serveur_x.y.z_x64-setup.exe` from the [releases](../../../releases) and install it (no administrator rights needed).
+1. Download `Témoin Server_x.y.z_x64-setup.exe` from the [releases](../../../releases) and install it (no administrator rights needed).
 2. First launch: server name, storage folder, **passphrase**. The private key is created on the spot and stored encrypted with that passphrase (standard age format): a stolen or seized PC gives nothing without it. Save a copy of the key right away (button provided), e.g. on a USB stick kept elsewhere. **Lose the passphrase and the key = the recordings are unreadable forever.**
 3. **Start**: the app opens a Cloudflare quick tunnel and shows a public `https://….trycloudflare.com` address. No account, no router setup.
 4. **Invite phones**: shows a QR code to scan in the app.

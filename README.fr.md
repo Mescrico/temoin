@@ -75,7 +75,7 @@ Vrai iPhone, version précédente (l'ancien nom de l'app est flouté). La page d
 
 **1. Un serveur**, au choix :
 
-- **Un PC Windows à la maison** — installez *Témoin Serveur* (`Témoin Serveur_x.y.z_x64-setup.exe` dans les [releases](../../releases)). Au premier lancement, l'appli crée votre clé (protégée par une phrase de passe), puis **Démarrer** donne une adresse publique `https://…` via un tunnel Cloudflare : ni compte, ni réglage de la box.
+- **Un PC Windows à la maison** — installez *Témoin Server* (`Témoin Server_x.y.z_x64-setup.exe` dans les [releases](../../releases)). Au premier lancement, l'appli crée votre clé (protégée par une phrase de passe), puis **Démarrer** donne une adresse publique `https://…` via un tunnel Cloudflare : ni compte, ni réglage de la box.
 - **Docker** (NAS, VPS, machine Linux) — `ghcr.io/temoin-app/temoin-server`, voir l'[auto-hébergement](docs/SELF-HOSTING.md).
 - **Service Linux** sans Docker — un binaire statique + une unité systemd, voir l'[auto-hébergement](docs/SELF-HOSTING.md).
 

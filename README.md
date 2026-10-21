@@ -82,7 +82,7 @@ Real iPhone, earlier build with a French interface (the old app name is blurred)
 
 **1. A server.** Pick one:
 
-- **Windows PC at home** — install *Témoin Server* (`Témoin Serveur_x.y.z_x64-setup.exe` from the [releases](../../releases)). First launch creates your key (protected by a passphrase), then **Start** gives you a public `https://…` address through a Cloudflare quick tunnel: no account, no router setup.
+- **Windows PC at home** — install *Témoin Server* (`Témoin Server_x.y.z_x64-setup.exe` from the [releases](../../releases)). First launch creates your key (protected by a passphrase), then **Start** gives you a public `https://…` address through a Cloudflare quick tunnel: no account, no router setup.
 - **Docker** (NAS, VPS, Linux box) — `ghcr.io/temoin-app/temoin-server`, see [self-hosting](docs/SELF-HOSTING.md).
 - **Linux service** without Docker — single static binary + systemd unit, see [self-hosting](docs/SELF-HOSTING.md).
 
