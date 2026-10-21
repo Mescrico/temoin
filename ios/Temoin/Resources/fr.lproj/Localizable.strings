@@ -15,6 +15,9 @@
 "err_key_mismatch" = "La clé du serveur ne correspond pas au QR code. N\'utilisez pas ce réseau.";
 "err_not_server" = "Ce n\'est pas un serveur Témoin : %1$@";
 "err_bad_qr" = "Ce QR code n\'est pas un code d\'inscription Témoin.";
+"err_join_first" = "Rejoignez d\'abord un serveur : scannez le QR d\'invitation de son organisateur. Le raccourci lancera ensuite l\'enregistrement.";
+"scan_title" = "Scanner une invitation";
+"scan_hint" = "Visez le QR code affiché par le serveur (sa page d\'administration ou l\'appli de bureau).";
 "mode_photo" = "Photo";
 "mode_video" = "Vidéo";
 "mode_live" = "Live";

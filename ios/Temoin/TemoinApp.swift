@@ -47,6 +47,8 @@ final class AppModel: ObservableObject {
     @Published var pendingLink: EnrollLink?
     /// Set by the "Filmer" intent / widget / srec://record: start a Live recording at once.
     @Published var quickRecord = false
+    /// The widget was used before any server was joined: the welcome screen explains it.
+    @Published var serverNeeded = false
     @Published var queueCount = 0
     @Published var queueBytes: Int64 = 0
     @Published var rejected = 0
@@ -57,9 +59,20 @@ final class AppModel: ObservableObject {
         uploader.config = { Settings.snapshot() }
         uploader.onState = { [weak self] s in Task { @MainActor in self?.uploadState = s } }
         outbox.onChange = { [weak self] in Task { @MainActor in self?.refreshQueue() } }
-        QuickRecord.handler = { [weak self] in self?.quickRecord = true }
-        if QuickRecord.consume() { quickRecord = true }
+        QuickRecord.handler = { [weak self] in self?.quickRecordRequested() }
+        if QuickRecord.consume() { quickRecordRequested(consumed: true) }
         refreshQueue()
+    }
+
+    /// Without a server there is nothing to film for: stay on the welcome screen and drop the
+    /// request, so that joining a server later does not start a recording by surprise.
+    func quickRecordRequested(consumed: Bool = false) {
+        if settings.server == nil {
+            if !consumed { _ = QuickRecord.consume() }
+            serverNeeded = true
+        } else {
+            quickRecord = true
+        }
     }
 
     func refreshQueue() {

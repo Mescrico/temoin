@@ -16,6 +16,9 @@
 "err_key_mismatch" = "The server\'s key does not match the QR code. Do not use this network.";
 "err_not_server" = "Not a Témoin server: %1$@";
 "err_bad_qr" = "This QR code is not a Témoin enrollment code.";
+"err_join_first" = "Join a server first: scan the invitation QR code from its organizer. Then the shortcut will start filming.";
+"scan_title" = "Scan an invitation";
+"scan_hint" = "Point the camera at the QR code shown by the server (its admin page or the desktop app).";
 "mode_photo" = "Photo";
 "mode_video" = "Video";
 "mode_live" = "Live";

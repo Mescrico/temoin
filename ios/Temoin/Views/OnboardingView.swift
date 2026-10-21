@@ -23,7 +23,7 @@ struct OnboardingView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Circle().fill(accent).frame(width: 56, height: 56).padding(.top, 32)
+                Image("Logo").resizable().frame(width: 64, height: 64).clipShape(RoundedRectangle(cornerRadius: 14)).padding(.top, 32)
                 Text("Témoin").font(.largeTitle.bold())
                 Text("tagline").font(.title3).foregroundStyle(Color(white: 0.75))
                 Text("onb_body").foregroundStyle(muted)
@@ -49,16 +49,32 @@ struct OnboardingView: View {
             .padding(24)
         }
         .sheet(isPresented: $scanning) {
-            QRScannerView { code in
-                scanning = false
-                guard let link = EnrollLink(code), Recipient.isValid(link.recipient) else {
-                    error = NSLocalizedString("err_bad_qr", comment: ""); return
+            ZStack(alignment: .top) {
+                QRScannerView { code in
+                    scanning = false
+                    guard let link = EnrollLink(code), Recipient.isValid(link.recipient) else {
+                        error = NSLocalizedString("err_bad_qr", comment: ""); return
+                    }
+                    check(link.url, link.invite ?? "", expected: link.recipient)
                 }
-                check(link.url, link.invite ?? "", expected: link.recipient)
+                .ignoresSafeArea()
+                VStack(spacing: 6) {
+                    HStack {
+                        Spacer()
+                        Button("cancel") { scanning = false }.buttonStyle(.borderedProminent).tint(Color(white: 0.2))
+                    }
+                    Text("scan_title").font(.headline)
+                    Text("scan_hint").font(.subheadline).foregroundStyle(Color(white: 0.85)).multilineTextAlignment(.center)
+                }
+                .padding(16)
+                .background(LinearGradient(colors: [.black.opacity(0.75), .clear], startPoint: .top, endPoint: .bottom))
             }
-            .ignoresSafeArea()
         }
-        .onAppear(perform: consumePending)
+        .onAppear {
+            consumePending()
+            showServerNeeded()
+        }
+        .onChange(of: model.serverNeeded) { _ in showServerNeeded() }
         .onChange(of: model.pendingLink) { _ in consumePending() }
         .alert(item: $candidate) { c in
             Alert(
@@ -69,6 +85,14 @@ struct OnboardingView: View {
                 secondaryButton: .cancel { model.pendingLink = nil }
             )
         }
+    }
+
+    /// Opened from the widget before joining a server: close the scanner, say what to do.
+    private func showServerNeeded() {
+        guard model.serverNeeded else { return }
+        model.serverNeeded = false
+        scanning = false
+        error = NSLocalizedString("err_join_first", comment: "")
     }
 
     private func consumePending() {

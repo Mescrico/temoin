@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -47,6 +46,9 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.shape.RoundedCornerShape
 import io.github.temoin_app.temoin.R
 import io.github.temoin_app.temoin.TemoinApp
 import io.github.temoin_app.temoin.crypto.Recipient
@@ -133,7 +135,7 @@ fun OnboardingScreen(app: TemoinApp, link: EnrollLink?, onDone: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Spacer(Modifier.height(32.dp))
-            Box(Modifier.size(56.dp).clip(CircleShape).background(Accent))
+            Image(painterResource(R.drawable.logo), contentDescription = null, modifier = Modifier.size(64.dp).clip(RoundedCornerShape(14.dp)))
             Text(stringResource(R.string.app_name), style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
             Text(stringResource(R.string.tagline), style = MaterialTheme.typography.titleMedium, color = Color(0xFFBDBDC2))
             Text(stringResource(R.string.onb_body), color = Color(0xFF9AA0A6))
