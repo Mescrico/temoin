@@ -1,0 +1,1 @@
+Témoin 0.1.5: the app shows its logo, the invitation scanner has a Cancel button, and the Film shortcut no longer opens an empty camera before a server is joined.

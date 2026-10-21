@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.5
+
+- Apps: the welcome screen shows the logo; the "Film" widget, control or shortcut used before joining a server stays on the welcome screen and explains what to do (iOS), and no longer starts a recording by surprise right after joining.
+- iOS: the invitation scanner has a title, a hint and a Cancel button.
+- Docs and store listings: Témoin is described as a general-purpose tool.
+
 ## v0.1.4
 
 - **Give files back from the admin page**: *Create the link* on a request's line, choose the private key file (and its passphrase). The browser downloads the encrypted recordings, decrypts them, turns Android videos into MP4, re-encrypts everything with a fresh key and uploads it; the key file never leaves the browser. See the [threat model](docs/THREAT-MODEL.md) for the remaining risk.

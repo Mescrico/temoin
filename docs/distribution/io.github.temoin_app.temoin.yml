@@ -16,14 +16,14 @@ RepoType: git
 Repo: https://github.com/temoin-app/temoin.git
 
 Builds:
-  - versionName: 0.1.4
-    versionCode: 5
-    commit: v0.1.4
+  - versionName: 0.1.5
+    versionCode: 6
+    commit: v0.1.5
     subdir: android/app
     gradle:
       - yes
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags ^v[0-9.]+$
-CurrentVersion: 0.1.4
-CurrentVersionCode: 5
+CurrentVersion: 0.1.5
+CurrentVersionCode: 6
