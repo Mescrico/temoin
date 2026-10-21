@@ -223,6 +223,34 @@ def main():
                      "https://appstoreconnect.apple.com → Apps → + → New App "
                      f"(platform iOS, bundle ID {ident}), then run this workflow again.")
         print("app:", apps[0]["attributes"]["name"], apps[0]["id"])
+    elif cmd == "internal-testing":
+        # Export compliance answer chosen by the account holder for builds that don't have one yet,
+        # then an internal TestFlight group with every team member, receiving every build.
+        ident = sys.argv[2]
+        app_id = call("GET", f"/apps?filter[bundleId]={ident}")["data"][0]["id"]
+        for b in call("GET", f"/builds?filter[app]={app_id}&sort=-uploadedDate&limit=10")["data"]:
+            if b["attributes"].get("usesNonExemptEncryption") is None and b["attributes"].get("processingState") == "VALID":
+                r = call("PATCH", f"/builds/{b['id']}", {"data": {"type": "builds", "id": b["id"],
+                         "attributes": {"usesNonExemptEncryption": False}}}, soft=True)
+                print(f"build {b['attributes']['version']}: export compliance", "set" if r is not None else "FAILED")
+        groups = call("GET", f"/apps/{app_id}/betaGroups?limit=50")["data"]
+        group = next((g for g in groups if g["attributes"].get("isInternalGroup")), None)
+        if group is None:
+            group = call("POST", "/betaGroups", {"data": {"type": "betaGroups",
+                     "attributes": {"name": "Team", "isInternalGroup": True, "hasAccessToAllBuilds": True},
+                     "relationships": {"app": {"data": {"type": "apps", "id": app_id}}}}})["data"]
+            print("created internal group:", group["attributes"]["name"])
+        else:
+            print("internal group:", group["attributes"]["name"])
+        users = call("GET", "/users?limit=50")["data"]
+        for u in users:
+            a = u["attributes"]
+            r = call("POST", "/betaTesters", {"data": {"type": "betaTesters",
+                     "attributes": {"email": a["username"], "firstName": a.get("firstName", ""), "lastName": a.get("lastName", "")},
+                     "relationships": {"betaGroups": {"data": [{"type": "betaGroups", "id": group["id"]}]}}}}, soft=True)
+            print("team member added as internal tester" if r is not None else "team member: already a tester or not addable")
+        if FAILURES:
+            sys.exit(1)
     elif cmd == "metadata":
         metadata(sys.argv[2], sys.argv[3])
     elif cmd == "public-link":

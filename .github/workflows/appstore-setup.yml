@@ -7,7 +7,7 @@ on:
       task:
         description: What to do
         type: choice
-        options: [metadata, public-link]
+        options: [metadata, public-link, internal-testing]
         default: metadata
 
 jobs:
@@ -29,3 +29,6 @@ jobs:
       - name: TestFlight public link
         if: inputs.task == 'public-link'
         run: python3 tools/appstore.py public-link io.github.temoin-app.temoin
+      - name: TestFlight internal testing (team members, export compliance)
+        if: inputs.task == 'internal-testing'
+        run: python3 tools/appstore.py internal-testing io.github.temoin-app.temoin
