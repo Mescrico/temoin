@@ -1,8 +1,14 @@
 name: App Store Connect setup
 
-# One-off App Store Connect tasks through the API (no build): run from the Actions tab.
+# App Store Connect tasks through the API (no build): run from the Actions tab.
 on:
   workflow_dispatch:
+    inputs:
+      task:
+        description: What to do
+        type: choice
+        options: [metadata, public-link]
+        default: metadata
 
 jobs:
   setup:
@@ -15,5 +21,11 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - run: pip install -q cryptography
+      - name: App Store listing (docs/distribution/appstore.json)
+        if: inputs.task == 'metadata'
+        run: |
+          version=$(sed -n 's/.*MARKETING_VERSION: "\(.*\)"/\1/p' ios/project.yml)
+          python3 tools/appstore.py metadata docs/distribution/appstore.json "$version"
       - name: TestFlight public link
+        if: inputs.task == 'public-link'
         run: python3 tools/appstore.py public-link io.github.temoin-app.temoin

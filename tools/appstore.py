@@ -7,6 +7,7 @@ Environment: APPSTORE_ISSUER_ID, APPSTORE_KEY_ID, APPSTORE_API_KEY_P8 (the .p8 c
     python3 tools/appstore.py ensure-bundle-ids ID… # register missing iOS bundle IDs, print TEAM_ID=…
     python3 tools/appstore.py app-exists ID         # fails with a clear message if the app record is missing
     python3 tools/appstore.py public-link ID         # TestFlight external group with a public link (created once)
+    python3 tools/appstore.py metadata FILE VERSION  # App Store listing from docs/distribution/appstore.json
 """
 import base64
 import json
@@ -42,15 +43,111 @@ def token():
     return signing_input.decode() + "." + b64url(r.to_bytes(32, "big") + s.to_bytes(32, "big"))
 
 
-def call(method, path, body=None):
+FAILURES = []
+
+
+def call(method, path, body=None, soft=False):
     req = urllib.request.Request(API + path, method=method, data=json.dumps(body).encode() if body else None,
                                  headers={"Authorization": "Bearer " + token(), "Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=60) as r:
             return json.loads(r.read() or b"{}")
     except urllib.error.HTTPError as e:
-        detail = json.loads(e.read() or b"{}").get("errors", [{}])[0]
-        sys.exit(f"App Store Connect API {method} {path}: HTTP {e.code} {detail.get('title', '')} — {detail.get('detail', '')}")
+        errors = json.loads(e.read() or b"{}").get("errors", [{}])
+        msg = f"{method} {path}: HTTP {e.code} " + " | ".join(f"{x.get('title', '')} — {x.get('detail', '')}" for x in errors)
+        if soft:
+            print("  ! " + msg)
+            FAILURES.append(msg)
+            return None
+        sys.exit("App Store Connect API " + msg)
+
+
+def upsert_localizations(existing, wanted, kind, parent_type, parent_id, parent_rel):
+    """PATCH the localizations that exist, POST the missing ones."""
+    for locale, attrs in wanted.items():
+        if locale in existing:
+            r = call("PATCH", f"/{kind}/{existing[locale]['id']}",
+                     {"data": {"type": kind, "id": existing[locale]["id"], "attributes": attrs}}, soft=True)
+        else:
+            r = call("POST", f"/{kind}", {"data": {"type": kind, "attributes": {"locale": locale, **attrs},
+                                                    "relationships": {parent_rel: {"data": {"type": parent_type, "id": parent_id}}}}}, soft=True)
+        print(f"  {kind} {locale}: {'ok' if r is not None else 'FAILED'}")
+
+
+# Age rating answers for an app with no objectionable content: every level "NONE", every yes/no "false".
+AGE_BOOLEANS = {"gambling", "unrestrictedWebAccess", "lootBox", "advertising", "ageAssurance", "healthOrWellnessTopics",
+                "messagingAndChat", "parentalControls", "userGeneratedContent", "seventeenPlus"}
+AGE_SKIP = {"kidsAgeBand", "ageRatingOverride", "ageRatingOverrideV2", "koreaAgeRatingOverride", "developerAgeRatingInfoUrl"}
+
+
+def metadata(path, version):
+    meta = json.load(open(path, encoding="utf-8"))
+    app = call("GET", f"/apps?filter[bundleId]={meta['bundleId']}")["data"][0]
+    app_id = app["id"]
+    print("app:", app["attributes"]["name"], app_id)
+
+    r = call("PATCH", f"/apps/{app_id}", {"data": {"type": "apps", "id": app_id,
+             "attributes": {"contentRightsDeclaration": meta["contentRightsDeclaration"]}}}, soft=True)
+    print("content rights:", "ok" if r is not None else "FAILED")
+
+    infos = call("GET", f"/apps/{app_id}/appInfos")["data"]
+    editable = [i for i in infos if i["attributes"].get("state", i["attributes"].get("appStoreState")) not in ("READY_FOR_DISTRIBUTION", "READY_FOR_SALE")]
+    info = (editable or infos)[0]
+    r = call("PATCH", f"/appInfos/{info['id']}", {"data": {"type": "appInfos", "id": info["id"], "relationships": {
+        "primaryCategory": {"data": {"type": "appCategories", "id": meta["primaryCategory"]}},
+        "secondaryCategory": {"data": {"type": "appCategories", "id": meta["secondaryCategory"]}}}}}, soft=True)
+    print("categories:", "ok" if r is not None else "FAILED")
+
+    locs = {l["attributes"]["locale"]: l for l in call("GET", f"/appInfos/{info['id']}/appInfoLocalizations")["data"]}
+    upsert_localizations(locs, meta["info"], "appInfoLocalizations", "appInfos", info["id"], "appInfo")
+
+    decl = call("GET", f"/appInfos/{info['id']}/ageRatingDeclaration", soft=True)
+    if decl and decl.get("data"):
+        attrs = {}
+        for k in decl["data"]["attributes"]:
+            if k in AGE_SKIP:
+                continue
+            attrs[k] = False if k in AGE_BOOLEANS else "NONE"
+        r = call("PATCH", f"/ageRatingDeclarations/{decl['data']['id']}",
+                 {"data": {"type": "ageRatingDeclarations", "id": decl["data"]["id"], "attributes": attrs}}, soft=True)
+        print("age rating:", "ok" if r is not None else "FAILED")
+
+    versions = call("GET", f"/apps/{app_id}/appStoreVersions?filter[platform]=IOS")["data"]
+    open_states = ("PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED")
+    ver = next((v for v in versions if v["attributes"].get("appStoreState", v["attributes"].get("appVersionState")) in open_states), None)
+    if ver is None:
+        sys.exit("no editable App Store version")
+    r = call("PATCH", f"/appStoreVersions/{ver['id']}", {"data": {"type": "appStoreVersions", "id": ver["id"],
+             "attributes": {"versionString": version, "copyright": meta["copyright"]}}}, soft=True)
+    print(f"version {version}:", "ok" if r is not None else "FAILED")
+
+    vlocs = {l["attributes"]["locale"]: l for l in call("GET", f"/appStoreVersions/{ver['id']}/appStoreVersionLocalizations")["data"]}
+    upsert_localizations(vlocs, meta["store"], "appStoreVersionLocalizations", "appStoreVersions", ver["id"], "appStoreVersion")
+
+    builds = call("GET", f"/builds?filter[app]={app_id}&filter[preReleaseVersion.version]={version}&filter[processingState]=VALID&sort=-uploadedDate&limit=1")["data"]
+    if builds:
+        r = call("PATCH", f"/appStoreVersions/{ver['id']}/relationships/build", {"data": {"type": "builds", "id": builds[0]["id"]}}, soft=True)
+        print(f"build {builds[0]['attributes'].get('version')}:", "ok" if r is not None else "FAILED")
+    else:
+        print(f"  ! no processed build {version} yet")
+        FAILURES.append(f"no processed build {version}")
+
+    review = call("GET", f"/appStoreVersions/{ver['id']}/appStoreReviewDetail", soft=True)
+    if review and review.get("data"):
+        r = call("PATCH", f"/appStoreReviewDetails/{review['data']['id']}", {"data": {"type": "appStoreReviewDetails",
+                 "id": review["data"]["id"], "attributes": {"notes": meta["reviewNotes"], "demoAccountRequired": False}}}, soft=True)
+    else:
+        r = call("POST", "/appStoreReviewDetails", {"data": {"type": "appStoreReviewDetails",
+                 "attributes": {"notes": meta["reviewNotes"], "demoAccountRequired": False},
+                 "relationships": {"appStoreVersion": {"data": {"type": "appStoreVersions", "id": ver["id"]}}}}}, soft=True)
+    print("review notes:", "ok" if r is not None else "FAILED")
+
+    if FAILURES:
+        print(f"\n{len(FAILURES)} step(s) failed:")
+        for f in FAILURES:
+            print(" -", f)
+        sys.exit(1)
+    print("\nall metadata applied")
 
 
 def bundle_ids():
@@ -97,6 +194,8 @@ def main():
                      "https://appstoreconnect.apple.com → Apps → + → New App "
                      f"(platform iOS, bundle ID {ident}), then run this workflow again.")
         print("app:", apps[0]["attributes"]["name"], apps[0]["id"])
+    elif cmd == "metadata":
+        metadata(sys.argv[2], sys.argv[3])
     elif cmd == "public-link":
         ident = sys.argv[2]
         apps = call("GET", f"/apps?filter[bundleId]={ident}")["data"]
