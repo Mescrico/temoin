@@ -6,6 +6,7 @@
   "copyright": "2026 Témoin contributors",
   "info": {
     "en-GB": {
+      "name": "Témoin – Encrypted Camera",
       "subtitle": "Film, encrypt, upload",
       "privacyPolicyUrl": "https://github.com/temoin-app/temoin/blob/main/docs/PRIVACY.md"
     },

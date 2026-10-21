@@ -12,6 +12,7 @@ Environment: APPSTORE_ISSUER_ID, APPSTORE_KEY_ID, APPSTORE_API_KEY_P8 (the .p8 c
 import base64
 import json
 import os
+import re
 import sys
 import time
 import urllib.error
@@ -103,13 +104,19 @@ def metadata(path, version):
 
     decl = call("GET", f"/appInfos/{info['id']}/ageRatingDeclaration", soft=True)
     if decl and decl.get("data"):
-        attrs = {}
-        for k in decl["data"]["attributes"]:
-            if k in AGE_SKIP:
-                continue
-            attrs[k] = False if k in AGE_BOOLEANS else "NONE"
-        r = call("PATCH", f"/ageRatingDeclarations/{decl['data']['id']}",
-                 {"data": {"type": "ageRatingDeclarations", "id": decl["data"]["id"], "attributes": attrs}}, soft=True)
+        attrs = {k: (False if k in AGE_BOOLEANS else "NONE") for k in decl["data"]["attributes"] if k not in AGE_SKIP}
+        # Apple keeps adding questions: when it says an attribute is a BOOLEAN, answer "false" and retry.
+        for _ in range(4):
+            r = call("PATCH", f"/ageRatingDeclarations/{decl['data']['id']}",
+                     {"data": {"type": "ageRatingDeclarations", "id": decl["data"]["id"], "attributes": attrs}}, soft=True)
+            if r is not None:
+                break
+            fixed = re.findall(r"attribute '(\w+)'\. Expected a BOOLEAN", FAILURES[-1])
+            if not fixed:
+                break
+            FAILURES.pop()
+            for k in fixed:
+                attrs[k] = False
         print("age rating:", "ok" if r is not None else "FAILED")
 
     versions = call("GET", f"/apps/{app_id}/appStoreVersions?filter[platform]=IOS")["data"]
