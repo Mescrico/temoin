@@ -143,8 +143,10 @@ def metadata(path, version):
 
     review = call("GET", f"/appStoreVersions/{ver['id']}/appStoreReviewDetail", soft=True)
     if review and review.get("data"):
+        # The API wants the contact (entered in App Store Connect) sent back with every change.
+        attrs = {k: v for k, v in review["data"]["attributes"].items() if k.startswith("contact") and v}
         r = call("PATCH", f"/appStoreReviewDetails/{review['data']['id']}", {"data": {"type": "appStoreReviewDetails",
-                 "id": review["data"]["id"], "attributes": {"notes": meta["reviewNotes"], "demoAccountRequired": False}}}, soft=True)
+                 "id": review["data"]["id"], "attributes": {**attrs, "notes": meta["reviewNotes"], "demoAccountRequired": False}}}, soft=True)
     else:
         r = call("POST", "/appStoreReviewDetails", {"data": {"type": "appStoreReviewDetails",
                  "attributes": {"notes": meta["reviewNotes"], "demoAccountRequired": False},
@@ -163,8 +165,9 @@ def metadata(path, version):
     upsert_localizations(blocs, beta, "betaAppLocalizations", "apps", app_id, "app")
     bdetail = call("GET", f"/apps/{app_id}/betaAppReviewDetail", soft=True)
     if bdetail and bdetail.get("data"):
+        battrs = {k: v for k, v in bdetail["data"]["attributes"].items() if k.startswith("contact") and v}
         r = call("PATCH", f"/betaAppReviewDetails/{bdetail['data']['id']}", {"data": {"type": "betaAppReviewDetails",
-                 "id": bdetail["data"]["id"], "attributes": {"notes": meta["reviewNotes"], "demoAccountRequired": False}}}, soft=True)
+                 "id": bdetail["data"]["id"], "attributes": {**battrs, "notes": meta["reviewNotes"], "demoAccountRequired": False}}}, soft=True)
         if r is None and "contact" in FAILURES[-1]:
             FAILURES.pop()
             print("TestFlight review notes: skipped (enter the review contact once in TestFlight, then run again)")
