@@ -94,16 +94,60 @@ jobs:
       - uses: taiki-e/install-action@v2
         with:
           tool: tauri-cli@2
+      - name: Import the Developer ID certificate (when configured)
+        id: sign
+        env:
+          MACOS_CERT_P12: ${{ secrets.MACOS_CERT_P12 }}
+          MACOS_CERT_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -z "${MACOS_CERT_P12:-}" ]; then
+            echo "No Developer ID certificate: ad-hoc signature, not notarized."
+            echo "identity=-" >> "$GITHUB_OUTPUT"; echo "notarize=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          kc="$RUNNER_TEMP/build.keychain-db"; kp=$(openssl rand -hex 16)
+          security create-keychain -p "$kp" "$kc"
+          security set-keychain-settings -lut 3600 "$kc"
+          security unlock-keychain -p "$kp" "$kc"
+          printf '%s' "$MACOS_CERT_P12" | base64 --decode > "$RUNNER_TEMP/cert.p12"
+          security import "$RUNNER_TEMP/cert.p12" -k "$kc" -P "$MACOS_CERT_PASSWORD" -T /usr/bin/codesign
+          rm -f "$RUNNER_TEMP/cert.p12"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$kp" "$kc" >/dev/null
+          security list-keychains -d user -s "$kc" $(security list-keychains -d user | tr -d '"')
+          id=$(security find-identity -v -p codesigning "$kc" | sed -n 's/.*"\(Developer ID Application: .*\)"/\1/p' | head -1)
+          test -n "$id"
+          echo "identity=$id" >> "$GITHUB_OUTPUT"; echo "notarize=true" >> "$GITHUB_OUTPUT"
       - name: Build app and disk image (Apple Silicon + Intel)
         working-directory: desktop
-        run: cargo tauri build --target universal-apple-darwin
+        env:
+          IDENTITY: ${{ steps.sign.outputs.identity }}
+          NOTARIZE: ${{ steps.sign.outputs.notarize }}
+          APPSTORE_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+          APPSTORE_KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+          APPSTORE_API_KEY_P8: ${{ secrets.APPSTORE_API_KEY_P8 }}
+        run: |
+          set -euo pipefail
+          if [ "$NOTARIZE" = "true" ]; then
+            # Tauri notarizes and staples the app with the App Store Connect API key.
+            printf '%s' "$APPSTORE_API_KEY_P8" > "$RUNNER_TEMP/AuthKey.p8"
+            export APPLE_API_ISSUER="$APPSTORE_ISSUER_ID" APPLE_API_KEY="$APPSTORE_KEY_ID" APPLE_API_KEY_PATH="$RUNNER_TEMP/AuthKey.p8"
+          fi
+          cargo tauri build --target universal-apple-darwin \
+            --config "{\"bundle\":{\"macOS\":{\"signingIdentity\":\"$IDENTITY\"}}}"
+          rm -f "$RUNNER_TEMP/AuthKey.p8"
       - name: Check the bundle
+        env:
+          NOTARIZE: ${{ steps.sign.outputs.notarize }}
         run: |
           set -euo pipefail
           app=$(ls -d desktop/src-tauri/target/universal-apple-darwin/release/bundle/macos/*.app)
           ls "$app/Contents/MacOS" "$app/Contents/Resources"
           lipo -info "$app/Contents/MacOS/"*
-          codesign --verify --deep --strict "$app" && echo "signature OK (ad-hoc)"
+          codesign --verify --deep --strict "$app" && echo "signature OK"
+          if [ "$NOTARIZE" = "true" ]; then
+            xcrun stapler validate "$app"
+            spctl --assess --type execute -vv "$app"
+          fi
       - name: Smoke test (the app starts and stays up)
         run: |
           set -euo pipefail
