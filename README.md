@@ -88,7 +88,7 @@ Real iPhone, earlier build with a French interface (the old app name is blurred)
 - **Docker** (NAS, VPS, Linux box) — `ghcr.io/temoin-app/temoin-server`, see [self-hosting](docs/SELF-HOSTING.md).
 - **Linux service** without Docker — single static binary + systemd unit, see [self-hosting](docs/SELF-HOSTING.md).
 
-**2. The phones.** Install the app ([releases](../../releases): Android APK; iOS currently as an unsigned IPA to sideload — App Store distribution is on the roadmap), scan an invitation QR from your server, film.
+**2. The phones.** Install the app — **Android**: APK from the [releases](../../releases) (F-Droid and Google Play coming); **iPhone**: public beta on [TestFlight](https://testflight.apple.com/join/DYbucJRp) (App Store coming), or the unsigned IPA from the releases to sideload. Then scan an invitation QR from your server, film.
 
 **3. Recover.** On the computer holding the key: **Recover** in the desktop app, or `sr decrypt` from the command line.
 

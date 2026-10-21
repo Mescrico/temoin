@@ -81,7 +81,7 @@ Vrai iPhone, version précédente (l'ancien nom de l'app est flouté). La page d
 - **Docker** (NAS, VPS, machine Linux) — `ghcr.io/temoin-app/temoin-server`, voir l'[auto-hébergement](docs/SELF-HOSTING.md).
 - **Service Linux** sans Docker — un binaire statique + une unité systemd, voir l'[auto-hébergement](docs/SELF-HOSTING.md).
 
-**2. Les téléphones.** Installez l'app ([releases](../../releases) : APK Android ; iOS pour l'instant en IPA non signée à installer soi-même — l'App Store est prévu), scannez un QR d'invitation de votre serveur, filmez.
+**2. Les téléphones.** Installez l'app — **Android** : APK dans les [releases](../../releases) (F-Droid et Google Play à venir) ; **iPhone** : bêta publique sur [TestFlight](https://testflight.apple.com/join/DYbucJRp) (App Store à venir), ou l'IPA non signée des releases à installer soi-même. Puis scannez un QR d'invitation de votre serveur, filmez.
 
 **3. Récupérer.** Sur l'ordinateur qui a la clé : **Récupérer** dans l'appli de bureau, ou `sr decrypt` en ligne de commande.
 
