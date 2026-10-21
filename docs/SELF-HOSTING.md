@@ -4,7 +4,7 @@ The server receives encrypted segments from the phones and stores them. It **nev
 
 Three ways to run it:
 
-1. [Windows home PC](#1-windows-home-pc-desktop-app) — desktop app, no command line.
+1. [Windows or Mac at home](#1-windows-or-mac-at-home-desktop-app) — desktop app, no command line.
 2. [Docker](#2-docker) — NAS, VPS, Linux box.
 3. [Linux service](#3-linux-service-without-docker) — static binary + systemd.
 
@@ -12,17 +12,19 @@ Phones need **HTTPS** to reach the server. Section [Reaching the server](#reachi
 
 ---
 
-## 1. Windows home PC (desktop app)
+## 1. Windows or Mac at home (desktop app)
 
-1. Download `Témoin Server_x.y.z_x64-setup.exe` from the [releases](../../../releases) and install it (no administrator rights needed).
+1. Download from the [releases](../../../releases) and install:
+   - **Windows**: `Témoin Server_x.y.z_x64-setup.exe` (no administrator rights needed).
+   - **Mac** (experimental): `Témoin Server_x.y.z_universal.dmg`, drag *Témoin Server* to Applications. The app is not notarized by Apple yet: the first time macOS refuses to open it; go to *System Settings → Privacy & Security* and click **Open Anyway**.
 2. First launch: server name, storage folder, **passphrase**. The private key is created on the spot and stored encrypted with that passphrase (standard age format): a stolen or seized PC gives nothing without it. Save a copy of the key right away (button provided), e.g. on a USB stick kept elsewhere. **Lose the passphrase and the key = the recordings are unreadable forever.**
 3. **Start**: the app opens a Cloudflare quick tunnel and shows a public `https://….trycloudflare.com` address. No account, no router setup.
 4. **Invite phones**: shows a QR code to scan in the app.
 5. **Recover** (passphrase) decrypts what arrived since last time into a folder. **Give files back** turns a person's request code into a one-time link. **Full administration** opens the `/admin` page, already logged in.
 
-Closing the window keeps the server running in the notification area. The PC is kept awake while the server runs.
+Closing the window keeps the server running in the notification area (menu bar on a Mac). The computer is kept awake while the server runs.
 
-**Start automatically** (Settings, on by default) opens Témoin in the background when you log in to Windows and starts the server, so it comes back after a reboot. Windows must log in to your account for that: on a PC that reboots unattended, turn on automatic sign-in or use Docker / the Linux service instead.
+**Start automatically** (Settings, on by default) opens Témoin in the background when you log in and starts the server, so it comes back after a reboot. Your session must open for that: on a computer that reboots unattended, turn on automatic login or use Docker / the Linux service instead.
 
 The quick-tunnel address **changes every time the server restarts**. Phones then scan a new invitation; they keep their identity, quota and pending uploads. For a fixed address, see [built-in HTTPS](#b-built-in-https-with-your-own-domain).
 

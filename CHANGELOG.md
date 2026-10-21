@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.1.1
+
+- **Desktop server for macOS** (experimental): universal disk image for Apple Silicon and Intel Macs, with the same features as on Windows. Not notarized by Apple yet; see the self-hosting guide for the first launch.
+- Desktop app starts with your session and restarts the server after a reboot; launching it again shows the open window.
+- iOS: capture modes show "Photo / Video / Live" instead of raw keys.
+- Hand-back page: clearer message when a link is opened without https.
+- Server: Docker compose and the Linux service always restart (also after a reboot).
+
 ## v0.1.0 — first public release
 
 First open-source release of Témoin.

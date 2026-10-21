@@ -1,6 +1,6 @@
 [package]
 name = "temoin-desktop"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "AGPL-3.0-or-later"
 description = "Témoin server for a home PC: setup wizard, quick tunnel, invitations, recovery."

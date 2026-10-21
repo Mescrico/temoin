@@ -48,7 +48,7 @@ Un téléphone arraché en plein tournage ne perd que les 2 à 4 dernières seco
 
 ## Captures
 
-| Serveur de bureau (Windows) | Page d'administration | Lien de restitution |
+| Serveur de bureau (Windows, macOS) | Page d'administration | Lien de restitution |
 |---|---|---|
 | ![Appli de bureau](docs/images/desktop.png) | ![Administration](docs/images/admin.png) | ![Page du lien](docs/images/handback.png) |
 
@@ -67,7 +67,7 @@ Vrai iPhone, version précédente (l'ancien nom de l'app est flouté). La page d
 | [`android/`](android) | App téléphone | Kotlin, Jetpack Compose, Camera2, MediaCodec, muxer MPEG-TS maison |
 | [`ios/`](ios) | App téléphone | SwiftUI, AVFoundation (segments fMP4), XcodeGen |
 | [`server/`](server) | Serveur (image Docker ou service Linux) + outil `sr` de l'opérateur | Rust, axum |
-| [`desktop/`](desktop) | **Serveur pour un PC à la maison** (installeur Windows) : assistant, accès Internet, invitations, récupération | Rust, Tauri |
+| [`desktop/`](desktop) | **Serveur pour votre propre ordinateur** (installeur Windows, image disque macOS) : assistant, accès Internet, invitations, récupération | Rust, Tauri |
 | [`docs/`](docs) | Protocole, modèle de menace, auto-hébergement, plan de tests de sécurité | |
 | [`tools/`](tools) | Vérifications d'interopérabilité (l'outil `age` officiel déchiffre ce que produit chaque app) | |
 
@@ -76,6 +76,7 @@ Vrai iPhone, version précédente (l'ancien nom de l'app est flouté). La page d
 **1. Un serveur**, au choix :
 
 - **Un PC Windows à la maison** — installez *Témoin Server* (`Témoin Server_x.y.z_x64-setup.exe` dans les [releases](../../releases)). Au premier lancement, l'appli crée votre clé (protégée par une phrase de passe), puis **Démarrer** donne une adresse publique `https://…` via un tunnel Cloudflare : ni compte, ni réglage de la box.
+- **Mac** — même appli : `Témoin Server_x.y.z_universal.dmg` (Apple Silicon et Intel). Pas encore notarisée par Apple : la première fois, ouvrez-la depuis *Réglages Système → Confidentialité et sécurité → Ouvrir quand même*. Expérimentale : testée seulement sous Windows pour l'instant.
 - **Docker** (NAS, VPS, machine Linux) — `ghcr.io/temoin-app/temoin-server`, voir l'[auto-hébergement](docs/SELF-HOSTING.md).
 - **Service Linux** sans Docker — un binaire statique + une unité systemd, voir l'[auto-hébergement](docs/SELF-HOSTING.md).
 
@@ -118,9 +119,9 @@ Mais : **personne n'a encore audité ce code.** Le chiffrement age est réimplé
 
 ## État et feuille de route
 
-Alpha. Fonctionne de bout en bout aujourd'hui : apps Android et iOS, serveur Docker/Linux, serveur de bureau Windows avec tunnel rapide ou HTTPS intégré, récupération, liens de restitution.
+Alpha. Fonctionne de bout en bout aujourd'hui : apps Android et iOS, serveur Docker/Linux, serveur de bureau Windows (version macOS disponible, expérimentale) avec tunnel rapide ou HTTPS intégré, récupération, liens de restitution.
 
-Ensuite : audit de sécurité externe · distribution App Store / Play Store / F-Droid · appli de bureau macOS et Linux · adresse stable sans nom de domaine pour les serveurs maison · signatures ProofMode/C2PA en option.
+Ensuite : audit de sécurité externe · distribution App Store / Play Store / F-Droid · appli de bureau Linux · version macOS notarisée · adresse stable sans nom de domaine pour les serveurs maison · signatures ProofMode/C2PA en option.
 
 ## Contribuer
 
@@ -130,4 +131,4 @@ Tickets et pull requests bienvenus — voir [CONTRIBUTING.md](CONTRIBUTING.md). 
 
 [GNU AGPL-3.0-or-later](LICENSE). Si vous faites tourner un serveur modifié pour d'autres, vous devez partager vos modifications.
 
-L'installeur Windows embarque [`cloudflared`](https://github.com/cloudflare/cloudflared) de Cloudflare (Apache-2.0), sans modification.
+L'appli de bureau embarque [`cloudflared`](https://github.com/cloudflare/cloudflared) de Cloudflare (Apache-2.0), sans modification.

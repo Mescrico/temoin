@@ -104,6 +104,16 @@ jobs:
           ls "$app/Contents/MacOS" "$app/Contents/Resources"
           lipo -info "$app/Contents/MacOS/"*
           codesign --verify --deep --strict "$app" && echo "signature OK (ad-hoc)"
+      - name: Smoke test (the app starts and stays up)
+        run: |
+          set -euo pipefail
+          app=$(ls -d desktop/src-tauri/target/universal-apple-darwin/release/bundle/macos/*.app)
+          export SR_DESKTOP_HOME="$RUNNER_TEMP/temoin-home"
+          "$app/Contents/MacOS/temoin-desktop" > "$RUNNER_TEMP/app.log" 2>&1 &
+          pid=$!
+          sleep 20
+          if kill -0 "$pid" 2>/dev/null; then echo "app still running after 20 s"; kill "$pid"; else echo "app exited:"; cat "$RUNNER_TEMP/app.log"; exit 1; fi
+          cat "$RUNNER_TEMP/app.log"
       - uses: actions/upload-artifact@v4
         with:
           name: Temoin-Server-macos
