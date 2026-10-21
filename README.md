@@ -61,11 +61,11 @@ A phone snatched mid-recording loses only the last 2–4 seconds.
 
 **On the phone**
 
-| Lock-screen shortcut: filming starts | Joining a server: check its key | Getting your files back | The one-time link |
-|---|---|---|---|
-| <img src="docs/images/phone-record.gif" width="200" alt="iPhone: lock-screen shortcut, then recording starts"> | <img src="docs/images/phone-join.png" width="200" alt="Trust this server dialog"> | <img src="docs/images/phone-files-back.png" width="200" alt="Settings with a code to give to the organizer"> | <img src="docs/images/phone-link.png" width="200" alt="One-time download page"> |
+| One tap on the lock screen and it films | While filming: encrypted and sent every few seconds | Your files back through a one-time link |
+|---|---|---|
+| <img src="docs/images/phone-record.gif" width="230" alt="iPhone: lock-screen shortcut, then recording starts and uploads"> | <img src="docs/images/phone-uploading.png" width="230" alt="Recording: 2 encrypted, unreadable on this phone, 2 pending upload"> | <img src="docs/images/phone-link.png" width="230" alt="One-time download page"> |
 
-The first clip is a real iPhone (earlier build, French interface); the other screens come from the Android emulator.
+Real iPhone, earlier build with a French interface (the old app name is blurred). The link page is from the Android emulator.
 
 ## What's in this repository
 

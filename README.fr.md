@@ -54,11 +54,11 @@ Un téléphone arraché en plein tournage ne perd que les 2 à 4 dernières seco
 
 **Sur le téléphone**
 
-| Raccourci de l'écran verrouillé : ça filme | Rejoindre un serveur : vérifier sa clé | Récupérer ses fichiers | Le lien à usage unique |
-|---|---|---|---|
-| <img src="docs/images/phone-record.gif" width="200" alt="iPhone : raccourci de l'écran verrouillé, puis l'enregistrement démarre"> | <img src="docs/images/phone-join.png" width="200" alt="Fenêtre « Faire confiance à ce serveur ? »"> | <img src="docs/images/phone-files-back.png" width="200" alt="Réglages avec un code à donner à l'organisateur"> | <img src="docs/images/phone-link.png" width="200" alt="Page de téléchargement à usage unique"> |
+| Un appui sur l'écran verrouillé et ça filme | Pendant qu'on filme : chiffré et envoyé toutes les quelques secondes | Ses fichiers rendus par un lien à usage unique |
+|---|---|---|
+| <img src="docs/images/phone-record.gif" width="230" alt="iPhone : raccourci de l'écran verrouillé, l'enregistrement démarre et s'envoie"> | <img src="docs/images/phone-uploading.png" width="230" alt="Enregistrement : 2 chiffrés, illisibles sur ce téléphone, 2 en attente d'envoi"> | <img src="docs/images/phone-link.png" width="230" alt="Page de téléchargement à usage unique"> |
 
-La première animation vient d'un vrai iPhone (version précédente, en français) ; les autres écrans viennent de l'émulateur Android (en anglais).
+Vrai iPhone, version précédente (l'ancien nom de l'app est flouté). La page du lien vient de l'émulateur Android.
 
 ## Contenu du dépôt
 
