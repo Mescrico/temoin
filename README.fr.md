@@ -21,7 +21,7 @@
 
 ## Pourquoi
 
-Quand on filme une manifestation, un contrôle de police ou tout événement où les images comptent, **le téléphone est le point faible** : il peut être saisi, cassé, effacé ou perdu, et celui qui le tient peut regarder, supprimer ou diffuser ce qui a été filmé.
+Quand les images que l'on filme comptent, **le téléphone est le point faible** : il peut être saisi, cassé, effacé ou perdu, et celui qui le tient peut regarder, supprimer ou diffuser ce qui a été filmé.
 
 Témoin fait sortir les images du téléphone **pendant l'enregistrement**, chiffrées de sorte que :
 
@@ -29,7 +29,7 @@ Témoin fait sortir les images du téléphone **pendant l'enregistrement**, chif
 - le serveur **ne peut pas lire** ce qu'il stocke (il n'a jamais la clé privée) ;
 - seul l'organisateur, avec une clé privée gardée sur son propre ordinateur, peut déchiffrer — et peut ensuite **rendre à chacun ses propres enregistrements** par un lien à usage unique.
 
-Un téléphone arraché en plein tournage ne perd que les 2 à 4 dernières secondes.
+Un téléphone perdu ou pris en plein tournage ne perd que les 2 à 4 dernières secondes.
 
 ## Comment ça marche
 
@@ -108,7 +108,7 @@ Témoin s'appuie sur des idées d'outils existants :
 - [**Save**](https://open-archive.org) (OpenArchive) — envoie les médias vers Nextcloud ou l'Internet Archive ; seul le transport est chiffré, la destination peut lire les fichiers.
 - [**ProofMode**](https://guardianproject.info/apps/org.witness.proofmode/) (Guardian Project) — signe les médias pour prouver leur authenticité. Complémentaire ; une intégration est envisageable.
 - [**eyeWitness to Atrocities**](https://www.eyewitness.global) — capture vérifiée avec chaîne de traçabilité, envoyée vers un dépôt central géré par l'organisation.
-- **ACLU Mobile Justice** — envoi automatique des vidéos de contrôles de police à l'ACLU ; [fermée en février 2025](https://en.wikipedia.org/wiki/ACLU_Mobile_Justice).
+- **ACLU Mobile Justice** — envoi automatique des vidéos à l'ACLU ; [fermée en février 2025](https://en.wikipedia.org/wiki/ACLU_Mobile_Justice).
 
 Ce que Témoin apporte : **envoi pendant le tournage** + **serveur auto-hébergé qui ne peut rien lire** + **identité anonyme par téléphone** + **liens de restitution à usage unique** + **un simple PC à la maison suffit**.
 

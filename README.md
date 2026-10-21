@@ -28,7 +28,7 @@
 
 ## Why
 
-When you film a protest, a police stop or any event where the footage matters, **the phone is the weak point**: it can be seized, broken, wiped or simply lost, and whoever holds it can watch, delete or leak what you filmed.
+When the footage you film matters, **the phone is the weak point**: it can be seized, broken, wiped or simply lost, and whoever holds it can watch, delete or leak what you filmed.
 
 Témoin moves the footage off the phone **as it is being recorded**, encrypted so that:
 
@@ -36,7 +36,7 @@ Témoin moves the footage off the phone **as it is being recorded**, encrypted s
 - the server **cannot read** what it stores (it never has the private key);
 - only the organizer, with a private key kept on their own computer, can decrypt — and can then **hand each person their own recordings back** through a one-time link.
 
-A phone snatched mid-recording loses only the last 2–4 seconds.
+A phone lost or taken mid-recording loses only the last 2–4 seconds.
 
 ## How it works
 
@@ -115,7 +115,7 @@ Témoin builds on ideas from tools that came before it:
 - [**Save**](https://open-archive.org) (OpenArchive) — uploads media to Nextcloud or the Internet Archive; transport encryption only, the destination can read the files.
 - [**ProofMode**](https://guardianproject.info/apps/org.witness.proofmode/) (Guardian Project) — signs media to prove authenticity. Complementary; integration is a possible future direction.
 - [**eyeWitness to Atrocities**](https://www.eyewitness.global) — verified capture with chain of custody, uploaded to a central repository run by the organization.
-- **ACLU Mobile Justice** — auto-uploaded police-encounter recordings to the ACLU; [shut down in February 2025](https://en.wikipedia.org/wiki/ACLU_Mobile_Justice).
+- **ACLU Mobile Justice** — auto-uploaded recordings to the ACLU; [shut down in February 2025](https://en.wikipedia.org/wiki/ACLU_Mobile_Justice).
 
 What Témoin adds: **upload while filming** + **a self-hosted server that cannot read anything** + **anonymous per-phone identities** + **one-time hand-back links** + **an ordinary home PC is enough**.
 

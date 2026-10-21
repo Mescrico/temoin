@@ -20,14 +20,14 @@
     "en-GB": {
       "promotionalText": "Encrypted while you film, sent every few seconds to your own server. Nothing readable stays on the phone.",
       "description": "Témoin records photos and video for moments when the phone itself is at risk: it can be seized, broken or forced open. Recordings are encrypted in memory while you film and uploaded every few seconds to a server that you or your group control. That server stores them but can never read them; only the organizer's key can.\n\n• Join a server by scanning an invitation QR code. No account, no phone number, no email.\n• Start filming from the lock screen. Video is cut into short segments, each encrypted and sent as soon as it is ready.\n• Nothing readable is kept on the phone. If it is taken, what was already sent is safe.\n• Get your own recordings back through a one-time download link.\n\nThe server runs on a home computer (free Windows and Mac app), a NAS or a VPS. Témoin is free software (AGPL-3.0). It was built with AI assistance and has not been audited yet.",
-      "keywords": "evidence,witness,encrypted camera,secure video,record,protest,journalist,privacy,police,human rights",
+      "keywords": "evidence,witness,encrypted camera,secure video,record,privacy,self-hosted,backup,encryption,upload",
       "supportUrl": "https://github.com/temoin-app/temoin/issues",
       "marketingUrl": "https://github.com/temoin-app/temoin"
     },
     "fr-FR": {
       "promotionalText": "Chiffré pendant que vous filmez, envoyé toutes les quelques secondes vers votre propre serveur. Rien de lisible ne reste sur le téléphone.",
       "description": "Témoin filme et photographie quand le téléphone lui-même est en danger : il peut être saisi, cassé ou forcé. Les enregistrements sont chiffrés en mémoire pendant que vous filmez et envoyés toutes les quelques secondes vers un serveur que vous ou votre groupe contrôlez. Ce serveur les garde mais ne peut jamais les lire ; seule la clé de l'organisateur le peut.\n\n• Rejoignez un serveur en scannant un QR d'invitation. Ni compte, ni numéro, ni e-mail.\n• Filmez depuis l'écran verrouillé. La vidéo est découpée en courts segments, chacun chiffré et envoyé dès qu'il est prêt.\n• Rien de lisible n'est gardé sur le téléphone. S'il est pris, ce qui a déjà été envoyé est à l'abri.\n• Récupérez vos propres enregistrements par un lien de téléchargement à usage unique.\n\nLe serveur tourne sur un ordinateur à la maison (appli gratuite pour Windows et Mac), un NAS ou un VPS. Témoin est un logiciel libre (AGPL-3.0). Il a été développé avec l'aide d'une IA et n'a pas encore été audité.",
-      "keywords": "preuve,témoin,caméra chiffrée,vidéo sécurisée,filmer,manifestation,journaliste,vie privée,police",
+      "keywords": "preuve,témoin,caméra chiffrée,vidéo sécurisée,filmer,vie privée,auto-hébergé,sauvegarde,chiffrement",
       "supportUrl": "https://github.com/temoin-app/temoin/issues",
       "marketingUrl": "https://github.com/temoin-app/temoin"
     }

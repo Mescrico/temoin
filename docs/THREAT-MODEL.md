@@ -22,7 +22,7 @@ What Témoin is designed to protect, against whom, and — just as important —
 
 ## Attackers considered
 
-- **Someone who takes the phone** (police, thief) after or during recording.
+- **Someone who takes the phone** after or during recording.
 - **Someone who takes or compromises the server** (seizure, hosting provider, intruder).
 - **A network observer** (Wi-Fi operator, ISP, tunnel provider).
 - **A malicious invitation holder** (troll, infiltrator) uploading junk or crafted objects.
