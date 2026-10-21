@@ -7,7 +7,7 @@ on:
       task:
         description: What to do
         type: choice
-        options: [metadata, public-link, internal-testing]
+        options: [metadata, screenshots, public-link, internal-testing]
         default: metadata
 
 jobs:
@@ -32,3 +32,6 @@ jobs:
       - name: TestFlight internal testing (team members, export compliance)
         if: inputs.task == 'internal-testing'
         run: python3 tools/appstore.py internal-testing io.github.temoin-app.temoin
+      - name: App Store screenshots (docs/distribution/appstore-screenshots)
+        if: inputs.task == 'screenshots'
+        run: python3 tools/appstore.py screenshots docs/distribution/appstore-screenshots

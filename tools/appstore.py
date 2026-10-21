@@ -251,6 +251,42 @@ def main():
             print("team member added as internal tester" if r is not None else "team member: already a tester or not addable")
         if FAILURES:
             sys.exit(1)
+    elif cmd == "screenshots":
+        # docs/distribution/appstore-screenshots/*.png (1284x2778) on every language of the
+        # editable version, replacing the previous set.
+        import glob, hashlib
+        folder = sys.argv[2]
+        files = sorted(glob.glob(os.path.join(folder, "*.png")))
+        if not files:
+            sys.exit("no screenshots in " + folder)
+        app_id = call("GET", "/apps?filter[bundleId]=io.github.temoin-app.temoin")["data"][0]["id"]
+        versions = call("GET", f"/apps/{app_id}/appStoreVersions?filter[platform]=IOS")["data"]
+        ver = next(v for v in versions if v["attributes"].get("appStoreState", v["attributes"].get("appVersionState"))
+                   in ("PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED"))
+        display = "APP_IPHONE_65"
+        for loc in call("GET", f"/appStoreVersions/{ver['id']}/appStoreVersionLocalizations")["data"]:
+            locale = loc["attributes"]["locale"]
+            sets = call("GET", f"/appStoreVersionLocalizations/{loc['id']}/appScreenshotSets")["data"]
+            sset = next((s for s in sets if s["attributes"]["screenshotDisplayType"] == display), None)
+            if sset is None:
+                sset = call("POST", "/appScreenshotSets", {"data": {"type": "appScreenshotSets",
+                            "attributes": {"screenshotDisplayType": display},
+                            "relationships": {"appStoreVersionLocalization": {"data": {"type": "appStoreVersionLocalizations", "id": loc["id"]}}}}})["data"]
+            for old in call("GET", f"/appScreenshotSets/{sset['id']}/appScreenshots")["data"]:
+                call("DELETE", f"/appScreenshots/{old['id']}")
+            for f in files:
+                data = open(f, "rb").read()
+                shot = call("POST", "/appScreenshots", {"data": {"type": "appScreenshots",
+                            "attributes": {"fileName": os.path.basename(f), "fileSize": len(data)},
+                            "relationships": {"appScreenshotSet": {"data": {"type": "appScreenshotSets", "id": sset["id"]}}}}})["data"]
+                for op in shot["attributes"]["uploadOperations"]:
+                    part = data[op["offset"]:op["offset"] + op["length"]]
+                    req = urllib.request.Request(op["url"], data=part, method=op["method"],
+                                                 headers={h["name"]: h["value"] for h in op.get("requestHeaders") or []})
+                    urllib.request.urlopen(req, timeout=120).read()
+                call("PATCH", f"/appScreenshots/{shot['id']}", {"data": {"type": "appScreenshots", "id": shot["id"],
+                     "attributes": {"uploaded": True, "sourceFileChecksum": hashlib.md5(data).hexdigest()}}})
+                print(f"{locale}: {os.path.basename(f)} uploaded")
     elif cmd == "metadata":
         metadata(sys.argv[2], sys.argv[3])
     elif cmd == "public-link":
