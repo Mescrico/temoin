@@ -1,0 +1,10 @@
+{
+  "bundle": {
+    "targets": [
+      "nsis"
+    ],
+    "resources": {
+      "resources/cloudflared.exe": "cloudflared.exe"
+    }
+  }
+}

@@ -17,6 +17,7 @@ ios/TemoinCore/.swiftpm/
 # Desktop
 desktop/src-tauri/gen/
 desktop/src-tauri/resources/cloudflared.exe
+desktop/src-tauri/resources/cloudflared
 # Local data and secrets (never commit a private key)
 .env
 server/data/

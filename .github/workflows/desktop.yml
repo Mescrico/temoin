@@ -1,4 +1,4 @@
-name: Desktop (Windows)
+name: Desktop (Windows, macOS)
 
 on:
   push:
@@ -48,3 +48,62 @@ jobs:
         run: |
           gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --draft --title "Témoin $GITHUB_REF_NAME" --notes "See CHANGELOG.md" || true
           gh release upload "$GITHUB_REF_NAME" desktop/src-tauri/target/release/bundle/nsis/*.exe --clobber
+
+  macos:
+    runs-on: macos-14
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: desktop/src-tauri
+      - name: Fetch cloudflared (official release, checksums checked, universal)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p desktop/src-tauri/resources cf
+          body=$(gh api repos/cloudflare/cloudflared/releases/latest --jq .body)
+          for arch in arm64 amd64; do
+            f=cloudflared-darwin-$arch.tgz
+            curl -fsSL -o "cf/$f" "https://github.com/cloudflare/cloudflared/releases/latest/download/$f"
+            want=$(printf '%s\n' "$body" | sed -n "s/^$f: *\([0-9a-f]\{64\}\).*/\1/p" | head -1)
+            got=$(shasum -a 256 "cf/$f" | cut -d' ' -f1)
+            echo "$f expected=$want got=$got"
+            test -n "$want" && test "$want" = "$got"
+            tar -xzf "cf/$f" -C cf && mv cf/cloudflared "cf/cloudflared-$arch"
+            codesign -dv "cf/cloudflared-$arch" 2>&1 | grep -E "Authority|Identifier" || echo "(not code-signed)"
+          done
+          lipo -create cf/cloudflared-arm64 cf/cloudflared-amd64 -output desktop/src-tauri/resources/cloudflared
+          chmod +x desktop/src-tauri/resources/cloudflared
+          lipo -info desktop/src-tauri/resources/cloudflared
+          desktop/src-tauri/resources/cloudflared --version
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: tauri-cli@2
+      - name: Build app and disk image (Apple Silicon + Intel)
+        working-directory: desktop
+        run: cargo tauri build --target universal-apple-darwin
+      - name: Check the bundle
+        run: |
+          set -euo pipefail
+          app=$(ls -d desktop/src-tauri/target/universal-apple-darwin/release/bundle/macos/*.app)
+          ls "$app/Contents/MacOS" "$app/Contents/Resources"
+          lipo -info "$app/Contents/MacOS/"*
+          codesign --verify --deep --strict "$app" && echo "signature OK (ad-hoc)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Temoin-Server-macos
+          path: desktop/src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
+
+      - name: Attach to the GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --draft --title "Témoin $GITHUB_REF_NAME" --notes "See CHANGELOG.md" || true
+          gh release upload "$GITHUB_REF_NAME" desktop/src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg --clobber

@@ -686,7 +686,8 @@ fn main() {
                 .icon(app.default_window_icon().cloned().expect("icon"))
                 .tooltip(tip)
                 .menu(&menu)
-                .show_menu_on_left_click(false)
+                // macOS: the menu bar icon opens its menu on click (no double-click there).
+                .show_menu_on_left_click(cfg!(target_os = "macos"))
                 .on_menu_event(|app, e| match e.id.as_ref() {
                     "open" => show_main(app),
                     "quit" => {
@@ -717,6 +718,13 @@ fn main() {
             recover, lookup_request, hand_back, free_space, devices, update_device, requests,
             revoke_share, current_invite
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running the app");
+        .build(tauri::generate_context!())
+        .expect("error while building the app")
+        .run(|_app, _event| {
+            // macOS: clicking the Dock icon brings the hidden window back.
+            #[cfg(target_os = "macos")]
+            if let tauri::RunEvent::Reopen { .. } = _event {
+                show_main(_app);
+            }
+        });
 }
