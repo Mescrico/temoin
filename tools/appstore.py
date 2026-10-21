@@ -165,7 +165,11 @@ def metadata(path, version):
     if bdetail and bdetail.get("data"):
         r = call("PATCH", f"/betaAppReviewDetails/{bdetail['data']['id']}", {"data": {"type": "betaAppReviewDetails",
                  "id": bdetail["data"]["id"], "attributes": {"notes": meta["reviewNotes"], "demoAccountRequired": False}}}, soft=True)
-        print("TestFlight review notes:", "ok" if r is not None else "FAILED")
+        if r is None and "contact" in FAILURES[-1]:
+            FAILURES.pop()
+            print("TestFlight review notes: skipped (enter the review contact once in TestFlight, then run again)")
+        else:
+            print("TestFlight review notes:", "ok" if r is not None else "FAILED")
 
     if FAILURES:
         print(f"\n{len(FAILURES)} step(s) failed:")
