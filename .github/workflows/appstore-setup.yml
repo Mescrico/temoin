@@ -1,0 +1,19 @@
+name: App Store Connect setup
+
+# One-off App Store Connect tasks through the API (no build): run from the Actions tab.
+on:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    if: github.repository == 'temoin-app/temoin'
+    env:
+      APPSTORE_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+      APPSTORE_KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+      APPSTORE_API_KEY_P8: ${{ secrets.APPSTORE_API_KEY_P8 }}
+    steps:
+      - uses: actions/checkout@v5
+      - run: pip install -q cryptography
+      - name: TestFlight public link
+        run: python3 tools/appstore.py public-link io.github.temoin-app.temoin

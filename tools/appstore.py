@@ -6,6 +6,7 @@ Environment: APPSTORE_ISSUER_ID, APPSTORE_KEY_ID, APPSTORE_API_KEY_P8 (the .p8 c
     python3 tools/appstore.py check                 # key works; team, bundle IDs, apps
     python3 tools/appstore.py ensure-bundle-ids ID… # register missing iOS bundle IDs, print TEAM_ID=…
     python3 tools/appstore.py app-exists ID         # fails with a clear message if the app record is missing
+    python3 tools/appstore.py public-link ID         # TestFlight external group with a public link (created once)
 """
 import base64
 import json
@@ -96,6 +97,22 @@ def main():
                      "https://appstoreconnect.apple.com → Apps → + → New App "
                      f"(platform iOS, bundle ID {ident}), then run this workflow again.")
         print("app:", apps[0]["attributes"]["name"], apps[0]["id"])
+    elif cmd == "public-link":
+        ident = sys.argv[2]
+        apps = call("GET", f"/apps?filter[bundleId]={ident}")["data"]
+        if not apps:
+            sys.exit(f"No App Store Connect app for {ident}.")
+        app_id = apps[0]["id"]
+        groups = call("GET", f"/apps/{app_id}/betaGroups?limit=50")["data"]
+        group = next((g for g in groups if not g["attributes"].get("isInternalGroup") and g["attributes"].get("publicLinkEnabled")), None)
+        if group is None:
+            group = call("POST", "/betaGroups", {"data": {
+                "type": "betaGroups",
+                "attributes": {"name": "Public beta", "publicLinkEnabled": True, "publicLinkLimitEnabled": False},
+                "relationships": {"app": {"data": {"type": "apps", "id": app_id}}},
+            }})["data"]
+            print("created group:", group["attributes"]["name"])
+        print("public link:", group["attributes"].get("publicLink"))
     else:
         sys.exit(__doc__)
 
