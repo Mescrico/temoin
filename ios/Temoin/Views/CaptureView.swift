@@ -92,15 +92,24 @@ struct CaptureView: View {
                 }
 
                 if !engine.recording {
-                    HStack(spacing: 8) {
+                    // Equal widths, and the chosen mode slides right above the shutter (like the system camera).
+                    let cell: CGFloat = 96
+                    let index = CGFloat(CaptureMode.allCases.firstIndex(of: engine.mode) ?? 0)
+                    let middle = CGFloat(CaptureMode.allCases.count - 1) / 2
+                    HStack(spacing: 0) {
                         ForEach(CaptureMode.allCases, id: \.self) { m in
                             Button { engine.setMode(m) } label: {
                                 Text(LocalizedStringKey("mode_" + m.rawValue)).textCase(.uppercase).font(.subheadline.weight(engine.mode == m ? .bold : .medium))
                                     .foregroundStyle(engine.mode == m ? (m == .photo ? .white : accent) : muted)
-                                    .padding(.horizontal, 14).padding(.vertical, 8)
+                                    .frame(width: cell).padding(.vertical, 8)
+                                    .contentShape(Rectangle())
                             }
                         }
-                    }.padding(.vertical, 8)
+                    }
+                    .offset(x: (middle - index) * cell)
+                    .animation(.easeOut(duration: 0.2), value: engine.mode)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
                 }
 
                 HStack {

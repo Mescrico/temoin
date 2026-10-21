@@ -17,6 +17,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -280,15 +282,21 @@ fun CaptureScreen(app: TemoinApp, onSettings: () -> Unit, settingsAllowed: Boole
 
             // ---- modes
             if (!st.recording) {
-                Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.Center) {
-                    listOf(Mode.PHOTO to R.string.mode_photo, Mode.VIDEO to R.string.mode_video, Mode.LIVE to R.string.mode_live).forEach { (m, label) ->
+                // Equal widths, and the chosen mode slides right above the shutter (like the system camera).
+                val modes = listOf(Mode.PHOTO to R.string.mode_photo, Mode.VIDEO to R.string.mode_video, Mode.LIVE to R.string.mode_live)
+                val cell = 96.dp
+                val index = modes.indexOfFirst { it.first == st.mode }.coerceAtLeast(0)
+                val shift by animateDpAsState(cell * ((modes.size - 1) / 2f - index), label = "modes")
+                Row(Modifier.fillMaxWidth().padding(vertical = 8.dp).offset(x = shift), horizontalArrangement = Arrangement.Center) {
+                    modes.forEach { (m, label) ->
                         val sel = st.mode == m
                         Text(
                             stringResource(label).uppercase(),
                             color = if (sel) (if (m == Mode.PHOTO) Color.White else Accent) else Color(0xFF9AA0A6),
                             fontWeight = if (sel) FontWeight.Bold else FontWeight.Medium,
                             fontSize = 14.sp,
-                            modifier = Modifier.clip(RoundedCornerShape(50)).clickable { engine.setMode(m) }.padding(horizontal = 16.dp, vertical = 8.dp),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.width(cell).clip(RoundedCornerShape(50)).clickable { engine.setMode(m) }.padding(vertical = 8.dp),
                         )
                     }
                 }
