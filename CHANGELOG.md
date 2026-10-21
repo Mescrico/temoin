@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.3
+
+- iOS: iPhone only for the App Store release (iPad support may come back later).
+- App Store listing kept in `docs/distribution/appstore.json` and applied through the App Store Connect API.
+
 ## v0.1.2
 
 - Android: no Google dependency metadata in the APK (F-Droid / IzzyOnDroid); release builds are unsigned when no key is configured; an Android App Bundle is built for the Play Store.
