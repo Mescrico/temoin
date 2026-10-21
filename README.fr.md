@@ -12,6 +12,7 @@
   <a href="README.md">🇬🇧 English version</a> ·
   <a href="docs/SELF-HOSTING.md">Auto-hébergement</a> (en anglais) ·
   <a href="docs/THREAT-MODEL.md">Modèle de menace</a> ·
+  <a href="docs/PRIVACY.md#politique-de-confidentialité">Confidentialité</a> ·
   <a href="docs/PROTOCOL.md">Protocole</a> ·
   <a href="SECURITY.md">Sécurité</a>
 </p>

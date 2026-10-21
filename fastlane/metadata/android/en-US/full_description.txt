@@ -1,0 +1,13 @@
+<p>Témoin records photos and video for situations where the phone itself is the weak point: it can be seized, broken or forced open. Recordings are <b>encrypted in memory while you film</b> and uploaded every few seconds to a server that you or your group control. That server stores them but can never read them; only the organizer's key can.</p>
+
+<p><b>How it works</b></p>
+<ul>
+<li>Join a server by scanning an invitation QR code. No account, no phone number, no email: the phone gets its own anonymous key.</li>
+<li>Film from the lock-screen shortcut. Video is cut into short segments, each encrypted (age, X25519 + ChaCha20-Poly1305) and sent as soon as it is ready.</li>
+<li>Nothing readable is written to the phone. If the phone is taken, what was already sent is safe on the server.</li>
+<li>Get your own recordings back: the app gives you a short code, the organizer answers with a one-time download link.</li>
+</ul>
+
+<p><b>The server</b> runs on a home computer (Windows or Mac app), a NAS or a VPS (Docker). It is free software too: https://github.com/temoin-app/temoin</p>
+
+<p>Témoin was built with AI assistance and has <b>not been audited yet</b>. Read the threat model before relying on it.</p>

@@ -1,0 +1,13 @@
+<p>Témoin filme et photographie quand le téléphone est le point faible : il peut être saisi, cassé ou forcé. Les enregistrements sont <b>chiffrés en mémoire pendant qu'on filme</b> et envoyés toutes les quelques secondes vers un serveur que vous ou votre groupe contrôlez. Ce serveur les garde mais ne peut jamais les lire ; seule la clé de l'organisateur le peut.</p>
+
+<p><b>Comment ça marche</b></p>
+<ul>
+<li>Rejoignez un serveur en scannant un QR d'invitation. Ni compte, ni numéro, ni e-mail : le téléphone reçoit sa propre clé anonyme.</li>
+<li>Filmez depuis le raccourci de l'écran verrouillé. La vidéo est découpée en courts segments, chacun chiffré (age, X25519 + ChaCha20-Poly1305) et envoyé dès qu'il est prêt.</li>
+<li>Rien de lisible n'est écrit sur le téléphone. S'il est pris, ce qui a déjà été envoyé est à l'abri sur le serveur.</li>
+<li>Récupérez vos propres enregistrements : l'app vous donne un code court, l'organisateur répond par un lien de téléchargement à usage unique.</li>
+</ul>
+
+<p><b>Le serveur</b> tourne sur un ordinateur à la maison (appli Windows ou Mac), un NAS ou un VPS (Docker). C'est aussi un logiciel libre : https://github.com/temoin-app/temoin</p>
+
+<p>Témoin a été développé avec l'aide d'une IA et n'a <b>pas encore été audité</b>. Lisez le modèle de menace avant de vous y fier.</p>

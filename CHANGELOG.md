@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.2
+
+- Android: no Google dependency metadata in the APK (F-Droid / IzzyOnDroid); release builds are unsigned when no key is configured; an Android App Bundle is built for the Play Store.
+- Store listings (`fastlane/metadata/android`), [privacy policy](docs/PRIVACY.md) and [distribution guide](docs/distribution/README.md).
+- iOS: signed builds uploaded to TestFlight by CI.
+
 ## v0.1.1
 
 - **Desktop server for macOS** (experimental): universal disk image for Apple Silicon and Intel Macs, with the same features as on Windows. Signed and notarized by Apple.

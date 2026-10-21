@@ -1,0 +1,1 @@
+Film, encrypt and upload at once: nothing readable stays on the phone

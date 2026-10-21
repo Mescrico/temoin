@@ -13,6 +13,7 @@
   <a href="README.fr.md">🇫🇷 Version française</a> ·
   <a href="docs/SELF-HOSTING.md">Self-hosting</a> ·
   <a href="docs/THREAT-MODEL.md">Threat model</a> ·
+  <a href="docs/PRIVACY.md">Privacy</a> ·
   <a href="docs/PROTOCOL.md">Protocol</a> ·
   <a href="SECURITY.md">Security</a>
 </p>

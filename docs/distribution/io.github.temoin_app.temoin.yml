@@ -1,0 +1,29 @@
+# Draft for F-Droid (merge request to https://gitlab.com/fdroid/fdroiddata, file metadata/io.github.temoin_app.temoin.yml).
+# Store texts, icon and screenshots are read from fastlane/metadata/android/ in this repository.
+Categories:
+  - Multimedia
+  - Security
+License: AGPL-3.0-or-later
+AuthorName: Témoin contributors
+WebSite: https://github.com/temoin-app/temoin
+SourceCode: https://github.com/temoin-app/temoin
+IssueTracker: https://github.com/temoin-app/temoin/issues
+Changelog: https://github.com/temoin-app/temoin/blob/main/CHANGELOG.md
+
+AutoName: Témoin
+
+RepoType: git
+Repo: https://github.com/temoin-app/temoin.git
+
+Builds:
+  - versionName: 0.1.2
+    versionCode: 3
+    commit: v0.1.2
+    subdir: android/app
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags ^v[0-9.]+$
+CurrentVersion: 0.1.2
+CurrentVersionCode: 3

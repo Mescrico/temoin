@@ -12,12 +12,13 @@ android {
         applicationId = "io.github.temoin_app.temoin"
         minSdk = 29
         targetSdk = 35
-        versionCode = 2
-        versionName = "0.1.1"
+        versionCode = 3
+        versionName = "0.1.2"
     }
 
     signingConfigs {
-        // CI injects a real key through env vars; local release builds fall back to the debug key.
+        // CI injects the release key through env vars. Without it the release build is unsigned
+        // (F-Droid builds from source and signs with its own key).
         create("release") {
             val ks = System.getenv("SR_KEYSTORE")
             if (ks != null) {
@@ -34,9 +35,15 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = if (System.getenv("SR_KEYSTORE") != null) signingConfigs.getByName("release")
-                else signingConfigs.getByName("debug")
+            signingConfig = if (System.getenv("SR_KEYSTORE") != null) signingConfigs.getByName("release") else null
         }
+    }
+
+    // Google's dependency metadata (encrypted for Google) stays out of the APK, which F-Droid and
+    // IzzyOnDroid flag; the Play Store bundle keeps it.
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = true
     }
 
     compileOptions {
