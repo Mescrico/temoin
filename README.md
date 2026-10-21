@@ -101,7 +101,7 @@ Real iPhone, earlier build with a French interface (the old app name is blurred)
 | Upload during recording, resume after network loss | ✓ | ✓ |
 | Record with the screen locked / app in background | ✓ | ✗ (iOS forbids it — black-screen mode instead) |
 | Start from the lock screen (tile / control / shortcut) | ✓ | ✓ |
-| External USB-C camera / microphone | ✓ (Android 14+, device-dependent) | mic only (camera: iPadOS 17+) |
+| External USB-C camera / microphone | ✓ (Android 14+, device-dependent) | mic only |
 | “Get my files back” request code | ✓ | ✓ |
 
 Read the [threat model](docs/THREAT-MODEL.md) before relying on Témoin: what it protects, and what it does **not** (e.g. the phone's screen and RAM hold the image for a few seconds; the server and any tunnel see IPs, sizes and times).

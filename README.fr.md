@@ -94,7 +94,7 @@ Vrai iPhone, version précédente (l'ancien nom de l'app est flouté). La page d
 | Envoi pendant l'enregistrement, reprise après coupure | ✓ | ✓ |
 | Filmer écran verrouillé / app en arrière-plan | ✓ | ✗ (interdit par iOS — mode écran noir à la place) |
 | Lancer depuis l'écran verrouillé (tuile / contrôle / raccourci) | ✓ | ✓ |
-| Caméra / micro USB-C externe | ✓ (Android 14+, selon le téléphone) | micro seulement (caméra : iPadOS 17+) |
+| Caméra / micro USB-C externe | ✓ (Android 14+, selon le téléphone) | micro seulement |
 | Code « Récupérer mes fichiers » | ✓ | ✓ |
 
 Lisez le [modèle de menace](docs/THREAT-MODEL.md) avant de compter sur Témoin : ce qu'il protège, et ce qu'il **ne protège pas** (l'écran et la mémoire du téléphone contiennent l'image quelques secondes ; le serveur et un éventuel tunnel voient les IP, tailles et heures).
