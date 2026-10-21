@@ -67,15 +67,24 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p desktop/src-tauri/resources cf
-          body=$(gh api repos/cloudflare/cloudflared/releases/latest --jq .body)
+          gh api repos/cloudflare/cloudflared/releases/latest > cf/release.json
+          tag=$(jq -r .tag_name cf/release.json)
+          body=$(jq -r .body cf/release.json)
           for arch in arm64 amd64; do
             f=cloudflared-darwin-$arch.tgz
-            curl -fsSL -o "cf/$f" "https://github.com/cloudflare/cloudflared/releases/latest/download/$f"
-            want=$(printf '%s\n' "$body" | sed -n "s/^$f: *\([0-9a-f]\{64\}\).*/\1/p" | head -1)
+            curl -fsSL -o "cf/$f" "https://github.com/cloudflare/cloudflared/releases/download/$tag/$f"
+            # The archive must match GitHub's recorded digest for that asset...
+            asset=$(jq -r --arg f "$f" '.assets[] | select(.name==$f) | .digest' cf/release.json | sed 's/^sha256://')
             got=$(shasum -a 256 "cf/$f" | cut -d' ' -f1)
-            echo "$f expected=$want got=$got"
-            test -n "$want" && test "$want" = "$got"
+            echo "$f asset-digest=$asset got=$got"
+            test -n "$asset" && test "$asset" = "$got"
             tar -xzf "cf/$f" -C cf && mv cf/cloudflared "cf/cloudflared-$arch"
+            # ...and the binary inside must match the checksum in Cloudflare's release notes
+            # (for the darwin .tgz entries, the notes give the checksum of the binary).
+            want=$(printf '%s\n' "$body" | sed -n "s/^$f: *\([0-9a-f]\{64\}\).*/\1/p" | head -1)
+            bin=$(shasum -a 256 "cf/cloudflared-$arch" | cut -d' ' -f1)
+            echo "cloudflared-$arch notes=$want got=$bin"
+            test -n "$want" && test "$want" = "$bin"
             codesign -dv "cf/cloudflared-$arch" 2>&1 | grep -E "Authority|Identifier" || echo "(not code-signed)"
           done
           lipo -create cf/cloudflared-arm64 cf/cloudflared-amd64 -output desktop/src-tauri/resources/cloudflared
