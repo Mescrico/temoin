@@ -83,7 +83,7 @@ Real iPhone, earlier build with a French interface (the old app name is blurred)
 **1. A server.** Pick one:
 
 - **Windows PC at home** — install *Témoin Server* (`Témoin Server_x.y.z_x64-setup.exe` from the [releases](../../releases)). First launch creates your key (protected by a passphrase), then **Start** gives you a public `https://…` address through a Cloudflare quick tunnel: no account, no router setup.
-- **Mac** — same app: `Témoin Server_x.y.z_universal.dmg` (Apple Silicon and Intel). Not notarized by Apple yet: the first time, open it from *System Settings → Privacy & Security → Open Anyway*. Experimental: tested on Windows only so far.
+- **Mac** — same app: `Témoin Server_x.y.z_universal.dmg` (Apple Silicon and Intel). Signed and notarized by Apple. Experimental: tested on Windows first, feedback from Mac users welcome.
 - **Docker** (NAS, VPS, Linux box) — `ghcr.io/temoin-app/temoin-server`, see [self-hosting](docs/SELF-HOSTING.md).
 - **Linux service** without Docker — single static binary + systemd unit, see [self-hosting](docs/SELF-HOSTING.md).
 
@@ -128,7 +128,7 @@ That said: **nobody has audited this code yet.** The age encryption is re-implem
 
 Alpha. Working end to end today: Android and iOS apps, Docker/Linux server, Windows desktop server (macOS build available, experimental) with quick tunnel or built-in HTTPS, recovery, hand-back links.
 
-Next: external security review · App Store / Play Store / F-Droid distribution · desktop app for Linux · notarized macOS build · stable address without a domain for home servers · optional ProofMode/C2PA signatures.
+Next: external security review · App Store / Play Store / F-Droid distribution · desktop app for Linux · stable address without a domain for home servers · optional ProofMode/C2PA signatures.
 
 ## Contributing
 

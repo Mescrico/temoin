@@ -2,7 +2,7 @@
 
 ## v0.1.1
 
-- **Desktop server for macOS** (experimental): universal disk image for Apple Silicon and Intel Macs, with the same features as on Windows. Not notarized by Apple yet; see the self-hosting guide for the first launch.
+- **Desktop server for macOS** (experimental): universal disk image for Apple Silicon and Intel Macs, with the same features as on Windows. Signed and notarized by Apple.
 - Desktop texts say "this computer" instead of "this PC".
 
 ## v0.1.0 — first public release

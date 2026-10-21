@@ -16,7 +16,7 @@ Phones need **HTTPS** to reach the server. Section [Reaching the server](#reachi
 
 1. Download from the [releases](../../../releases) and install:
    - **Windows**: `Témoin Server_x.y.z_x64-setup.exe` (no administrator rights needed).
-   - **Mac** (experimental): `Témoin Server_x.y.z_universal.dmg`, drag *Témoin Server* to Applications. The app is not notarized by Apple yet: the first time macOS refuses to open it; go to *System Settings → Privacy & Security* and click **Open Anyway**.
+   - **Mac** (experimental): `Témoin Server_x.y.z_universal.dmg`, drag *Témoin Server* to Applications. Signed and notarized by Apple.
 2. First launch: server name, storage folder, **passphrase**. The private key is created on the spot and stored encrypted with that passphrase (standard age format): a stolen or seized PC gives nothing without it. Save a copy of the key right away (button provided), e.g. on a USB stick kept elsewhere. **Lose the passphrase and the key = the recordings are unreadable forever.**
 3. **Start**: the app opens a Cloudflare quick tunnel and shows a public `https://….trycloudflare.com` address. No account, no router setup.
 4. **Invite phones**: shows a QR code to scan in the app.
