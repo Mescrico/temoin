@@ -287,6 +287,42 @@ def main():
                 call("PATCH", f"/appScreenshots/{shot['id']}", {"data": {"type": "appScreenshots", "id": shot["id"],
                      "attributes": {"uploaded": True, "sourceFileChecksum": hashlib.md5(data).hexdigest()}}})
                 print(f"{locale}: {os.path.basename(f)} uploaded")
+    elif cmd == "submit":
+        # App Review for the editable version (with the build chosen by `metadata`), and beta
+        # review of that build for the public TestFlight group. Run `metadata` first.
+        version = sys.argv[2]
+        app_id = call("GET", "/apps?filter[bundleId]=io.github.temoin-app.temoin")["data"][0]["id"]
+        builds = call("GET", f"/builds?filter[app]={app_id}&filter[preReleaseVersion.version]={version}"
+                             "&filter[processingState]=VALID&sort=-uploadedDate&limit=1")["data"]
+        if not builds:
+            sys.exit(f"no processed build {version} yet")
+        build = builds[0]
+        if build["attributes"].get("usesNonExemptEncryption") is None:
+            sys.exit("answer the export compliance question for this build first")
+        # Public beta: the build in the external group, then beta review.
+        groups = call("GET", f"/apps/{app_id}/betaGroups?limit=50")["data"]
+        public = next((g for g in groups if not g["attributes"].get("isInternalGroup") and g["attributes"].get("publicLinkEnabled")), None)
+        if public:
+            call("POST", f"/betaGroups/{public['id']}/relationships/builds", {"data": [{"type": "builds", "id": build["id"]}]}, soft=True)
+            r = call("POST", "/betaAppReviewSubmissions", {"data": {"type": "betaAppReviewSubmissions",
+                     "relationships": {"build": {"data": {"type": "builds", "id": build["id"]}}}}}, soft=True)
+            print("TestFlight beta review:", "submitted" if r is not None else "FAILED")
+        # App Store: one review submission holding the version.
+        versions = call("GET", f"/apps/{app_id}/appStoreVersions?filter[platform]=IOS")["data"]
+        ver = next(v for v in versions if v["attributes"].get("versionString") == version)
+        sub = call("POST", "/reviewSubmissions", {"data": {"type": "reviewSubmissions", "attributes": {"platform": "IOS"},
+                   "relationships": {"app": {"data": {"type": "apps", "id": app_id}}}}}, soft=True)
+        if sub is not None:
+            sid = sub["data"]["id"]
+            item = call("POST", "/reviewSubmissionItems", {"data": {"type": "reviewSubmissionItems",
+                        "relationships": {"reviewSubmission": {"data": {"type": "reviewSubmissions", "id": sid}},
+                                          "appStoreVersion": {"data": {"type": "appStoreVersions", "id": ver["id"]}}}}}, soft=True)
+            if item is not None:
+                r = call("PATCH", f"/reviewSubmissions/{sid}", {"data": {"type": "reviewSubmissions", "id": sid,
+                         "attributes": {"submitted": True}}}, soft=True)
+                print("App Review:", "submitted" if r is not None else "FAILED")
+        if FAILURES:
+            sys.exit(1)
     elif cmd == "metadata":
         metadata(sys.argv[2], sys.argv[3])
     elif cmd == "public-link":

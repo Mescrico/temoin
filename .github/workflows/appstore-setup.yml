@@ -7,7 +7,7 @@ on:
       task:
         description: What to do
         type: choice
-        options: [metadata, screenshots, public-link, internal-testing]
+        options: [metadata, screenshots, public-link, internal-testing, submit]
         default: metadata
 
 jobs:
@@ -35,3 +35,8 @@ jobs:
       - name: App Store screenshots (docs/distribution/appstore-screenshots)
         if: inputs.task == 'screenshots'
         run: python3 tools/appstore.py screenshots docs/distribution/appstore-screenshots
+      - name: Submit to App Review and TestFlight beta review
+        if: inputs.task == 'submit'
+        run: |
+          version=$(sed -n 's/.*MARKETING_VERSION: "\(.*\)"/\1/p' ios/project.yml)
+          python3 tools/appstore.py submit "$version"
