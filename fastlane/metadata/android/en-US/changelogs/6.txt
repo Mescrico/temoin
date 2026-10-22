@@ -1,1 +1,1 @@
-Témoin 0.1.5: the app shows its logo, the invitation scanner has a Cancel button, and the Film shortcut no longer opens an empty camera before a server is joined.
+First public release of Témoin: film, encrypt and upload at once to a server you control; nothing readable stays on the phone. Invitations by QR code, quick recording from the lock screen, and a request code to get your files back.

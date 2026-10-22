@@ -1,1 +1,0 @@
-Témoin 0.1.4 : l’organisateur peut créer le lien pour vous rendre vos fichiers directement depuis la page d’administration du serveur. Rien ne change dans l’app.

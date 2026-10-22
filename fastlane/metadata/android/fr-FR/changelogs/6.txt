@@ -1,1 +1,1 @@
-Témoin 0.1.5 : l’app affiche son logo, le scanner d’invitation a un bouton Annuler, et le raccourci Filmer n’ouvre plus une caméra vide avant d’avoir rejoint un serveur.
+Première version publique de Témoin : filmer, chiffrer et envoyer en même temps vers un serveur que vous contrôlez ; rien de lisible ne reste sur le téléphone. Invitation par QR code, enregistrement rapide depuis l’écran verrouillé et code de demande pour récupérer vos fichiers.

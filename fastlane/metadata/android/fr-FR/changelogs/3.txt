@@ -1,1 +1,0 @@
-Témoin 0.1.2 : prêt pour F-Droid et IzzyOnDroid (plus de métadonnées Google dans l’APK). Le serveur de bureau tourne aussi sur Mac depuis la 0.1.1.

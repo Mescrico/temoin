@@ -1,1 +1,0 @@
-Témoin 0.1.2: ready for F-Droid and IzzyOnDroid (no Google dependency metadata in the APK). The desktop server also runs on Mac since 0.1.1.
