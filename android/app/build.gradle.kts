@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId = "io.github.temoin_app.temoin"
         minSdk = 29
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 6
         versionName = "0.1.5"
     }
