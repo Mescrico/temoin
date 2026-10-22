@@ -40,7 +40,7 @@ import java.util.concurrent.Executors
 enum class Mode { PHOTO, VIDEO, LIVE }
 
 data class EngineState(
-    val mode: Mode = Mode.PHOTO,
+    val mode: Mode = Mode.VIDEO,
     val cameras: List<CameraInfo> = emptyList(),
     val camera: CameraInfo? = null,
     val previewSize: Size? = null,

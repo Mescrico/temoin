@@ -28,7 +28,7 @@ struct CameraOption: Identifiable, Equatable {
 /// relies on the dark-screen mode (screen on, black, auto-lock disabled).
 @MainActor
 final class CaptureEngine: NSObject, ObservableObject {
-    @Published var mode: CaptureMode = .photo
+    @Published var mode: CaptureMode = .video
     @Published private(set) var recording = false
     @Published private(set) var recordingSince: Date?
     @Published private(set) var sealedCount = 0
