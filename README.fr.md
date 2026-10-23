@@ -57,12 +57,24 @@ Android 10 ou plus récent. L'app se mettra à jour depuis Google Play une fois 
 
 ## Comment ça marche
 
-```
- Téléphone (Android / iOS)                   Votre serveur (PC, NAS, VPS)               Ordinateur de l'organisateur
- ─────────────────────────                   ────────────────────────────               ────────────────────────────
- caméra → segments de 2–4 s                  ne stocke que du chiffré,                  clé privée (protégée par phrase de passe)
- → chiffrés en mémoire (age, X25519) ─HTTPS─▶ écriture seule, registre chaîné  ─copie─▶ déchiffre, rassemble MP4/JPEG
- → envoyés aussitôt, puis effacés            aucune route pour lister ou lire          → liens à usage unique pour rendre les fichiers
+```mermaid
+flowchart LR
+  subgraph P["📱 Téléphone · Android / iOS"]
+    direction TB
+    C["Caméra"] --> S["Segments de 2–4 s"] --> E["Chiffrés en mémoire<br/>age · X25519<br/>avec la clé publique du serveur"]
+  end
+  subgraph V["🖥️ Votre serveur · PC, NAS, VPS"]
+    direction TB
+    W["Stockage en écriture seule<br/>uniquement du chiffré"] --- L["Registre chaîné par hash"]
+  end
+  subgraph O["🔑 Ordinateur de l'organisateur"]
+    direction TB
+    K["Clé privée<br/>protégée par phrase de passe"] --> D["Déchiffre et rassemble<br/>MP4 / JPEG"]
+  end
+  R["🌐 Personne qui a filmé<br/>n'importe quel navigateur, sans l'app"]
+  E -- "HTTPS, toutes les quelques secondes<br/>puis effacés du téléphone" --> W
+  W -- "copie des fichiers chiffrés" --> D
+  D -. "lien à usage unique<br/>clé neuve seulement dans le lien" .-> R
 ```
 
 - **Chiffrement** : fichiers [age](https://age-encryption.org) v1 standard (X25519, ChaCha20-Poly1305), déchiffrables aussi avec l'outil `age` officiel.
@@ -70,6 +82,26 @@ Android 10 ou plus récent. L'app se mettra à jour depuis Google Play une fois 
 - **Infalsifiable** : chaque objet reçu est inscrit dans un registre chaîné par hash (`sr verify`).
 - **Restitution** : la personne demande ses fichiers dans l'app et obtient un code court ; l'organisateur en fait un lien à usage unique, depuis la page d'administration ou l'appli de bureau. Les fichiers sont rechiffrés avec une clé neuve qui n'existe que dans le lien (`/r/<id>#<clé>`) : le serveur ne la voit jamais. La personne récupère un `.zip` dans n'importe quel navigateur, sans l'app.
 - **Rien n'est jamais supprimé** du serveur : les enregistrements rendus sont mis de côté et ne comptent plus dans le quota de l'appareil.
+
+### Rendre les fichiers
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant A as 📱 App
+  participant S as 🖥️ Serveur
+  participant O as 🔑 Organisateur
+  participant B as 🌐 Navigateur
+  A->>S: Récupérer mes fichiers
+  S-->>A: code de demande court, ex. K7F3-QX9M
+  Note over A,O: la personne donne le code à l'organisateur
+  O->>S: récupère les fichiers chiffrés de ce téléphone
+  O->>O: déchiffre, puis rechiffre avec une clé neuve
+  O->>S: envoie les fichiers rechiffrés
+  O-->>B: lien à usage unique, la clé est dans le fragment de l'URL et n'atteint jamais le serveur
+  B->>S: téléchargement unique
+  B->>B: déchiffre dans le navigateur, enregistre un .zip
+```
 
 ## Captures
 

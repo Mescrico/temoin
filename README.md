@@ -64,12 +64,24 @@ Android 10 or later. The app will update from Google Play once it is published t
 
 ## How it works
 
-```
- Phone (Android / iOS)                       Your server (home PC, NAS, VPS)            Organizer's computer
- ─────────────────────                       ───────────────────────────────            ────────────────────
- camera → 2–4 s segments                     stores ciphertext only,                    private key (passphrase-protected)
- → encrypted in RAM (age, X25519)  ──HTTPS──▶ write-only, hash-chained ledger  ──copy──▶ decrypts, reassembles MP4/JPEG
- → uploaded at once, then deleted            no route to list or download              → one-time links to hand files back
+```mermaid
+flowchart LR
+  subgraph P["📱 Phone · Android / iOS"]
+    direction TB
+    C["Camera"] --> S["2–4 s segments"] --> E["Encrypted in memory<br/>age · X25519<br/>with the server's public key"]
+  end
+  subgraph V["🖥️ Your server · home PC, NAS, VPS"]
+    direction TB
+    W["Write-only storage<br/>ciphertext only"] --- L["Hash-chained ledger"]
+  end
+  subgraph O["🔑 Organizer's computer"]
+    direction TB
+    K["Private key<br/>passphrase-protected"] --> D["Decrypt and reassemble<br/>MP4 / JPEG"]
+  end
+  R["🌐 Person who filmed<br/>any browser, no app"]
+  E -- "HTTPS, every few seconds<br/>then wiped from the phone" --> W
+  W -- "copy of the encrypted files" --> D
+  D -. "one-time link<br/>fresh key only in the link" .-> R
 ```
 
 - **Encryption**: standard [age](https://age-encryption.org) v1 files (X25519, ChaCha20-Poly1305). Anything you store can also be decrypted with the official `age` tool.
@@ -77,6 +89,26 @@ Android 10 or later. The app will update from Google Play once it is published t
 - **Tamper-evident**: every stored object is recorded in a hash-chained ledger (`sr verify`).
 - **Hand-back**: a person asks for their files in the app and gets a short code; the organizer turns it into a one-time link, from the admin page or the desktop app. The files are re-encrypted with a fresh key that only exists in the link (`/r/<id>#<key>`): the server never sees it. The recipient gets a `.zip` in any browser, no app needed.
 - **Nothing is ever deleted** on the server: handed-back recordings are moved aside and stop counting against the device quota.
+
+### Giving files back
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant A as 📱 App
+  participant S as 🖥️ Server
+  participant O as 🔑 Organizer
+  participant B as 🌐 Browser
+  A->>S: Get my files back
+  S-->>A: short request code, e.g. K7F3-QX9M
+  Note over A,O: the person gives the code to the organizer
+  O->>S: fetch that phone's encrypted files
+  O->>O: decrypt, then re-encrypt with a fresh key
+  O->>S: upload the re-encrypted files
+  O-->>B: one-time link, the key is in the URL fragment and never reaches the server
+  B->>S: download once
+  B->>B: decrypt in the browser, save a .zip
+```
 
 ## Screenshots
 
