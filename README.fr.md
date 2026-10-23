@@ -5,6 +5,7 @@
 <h1 align="center">Témoin</h1>
 
 <p align="center">
+  <strong>Caméra chiffrée</strong><br>
   Filmer. Chiffrer. Envoyer <strong>pendant qu'on filme</strong>. Rien ne reste lisible sur le téléphone.
 </p>
 

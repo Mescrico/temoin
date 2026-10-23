@@ -5,7 +5,7 @@
 <h1 align="center">Témoin</h1>
 
 <p align="center">
-  <em>“Témoin” is French for <strong>witness</strong>.</em><br>
+  <strong>Encrypted camera</strong> · <em>“Témoin” is French for <strong>witness</strong>.</em><br>
   Film. Encrypt. Upload <strong>while filming</strong>. Nothing readable stays on the phone.
 </p>
 
