@@ -26,6 +26,18 @@
 
 ---
 
+## Why
+
+When the footage you film matters, **the phone is the weak point**: it can be seized, broken, wiped or simply lost, and whoever holds it can watch, delete or leak what you filmed.
+
+Témoin moves the footage off the phone **as it is being recorded**, encrypted so that:
+
+- the phone **cannot read back** what it filmed (it only has the server's *public* key);
+- the server **cannot read** what it stores (it never has the private key);
+- only the organizer, with a private key kept on their own computer, can decrypt — and can then **hand each person their own recordings back** through a one-time link.
+
+A phone lost or taken mid-recording loses only the last 2–4 seconds.
+
 ## 📲 Get the app
 
 | | |
@@ -49,18 +61,6 @@ Android 10 or later. The app will update from Google Play once it is published t
 
 > [!IMPORTANT]
 > **Android testers wanted 🙋** Google only publishes apps from new developer accounts after a closed test with **at least 12 testers for 14 days**. If you have an Android phone and can keep the app installed for two weeks (using it now and then), please send the Gmail address of your Google account to **max.aumard93@gmail.com** with the subject *Témoin tester*. You will get an invitation link to install the app from Google Play. Thank you!
-
-## Why
-
-When the footage you film matters, **the phone is the weak point**: it can be seized, broken, wiped or simply lost, and whoever holds it can watch, delete or leak what you filmed.
-
-Témoin moves the footage off the phone **as it is being recorded**, encrypted so that:
-
-- the phone **cannot read back** what it filmed (it only has the server's *public* key);
-- the server **cannot read** what it stores (it never has the private key);
-- only the organizer, with a private key kept on their own computer, can decrypt — and can then **hand each person their own recordings back** through a one-time link.
-
-A phone lost or taken mid-recording loses only the last 2–4 seconds.
 
 ## How it works
 

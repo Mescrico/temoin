@@ -19,6 +19,18 @@
 
 ---
 
+## Pourquoi
+
+Quand les images que l'on filme comptent, **le téléphone est le point faible** : il peut être saisi, cassé, effacé ou perdu, et celui qui le tient peut regarder, supprimer ou diffuser ce qui a été filmé.
+
+Témoin fait sortir les images du téléphone **pendant l'enregistrement**, chiffrées de sorte que :
+
+- le téléphone **ne peut pas relire** ce qu'il a filmé (il n'a que la clé *publique* du serveur) ;
+- le serveur **ne peut pas lire** ce qu'il stocke (il n'a jamais la clé privée) ;
+- seul l'organisateur, avec une clé privée gardée sur son propre ordinateur, peut déchiffrer — et peut ensuite **rendre à chacun ses propres enregistrements** par un lien à usage unique.
+
+Un téléphone perdu ou pris en plein tournage ne perd que les 2 à 4 dernières secondes.
+
 ## 📲 Installer l'app
 
 | | |
@@ -42,18 +54,6 @@ Android 10 ou plus récent. L'app se mettra à jour depuis Google Play une fois 
 
 > [!IMPORTANT]
 > **On cherche des testeurs Android 🙋** Google ne publie les apps des nouveaux comptes développeur qu'après un test fermé avec **au moins 12 testeurs pendant 14 jours**. Si vous avez un téléphone Android et pouvez garder l'app installée deux semaines (en l'utilisant de temps en temps), envoyez l'adresse Gmail de votre compte Google à **max.aumard93@gmail.com** avec l'objet *Testeur Témoin*. Vous recevrez un lien d'invitation pour installer l'app depuis Google Play. Merci !
-
-## Pourquoi
-
-Quand les images que l'on filme comptent, **le téléphone est le point faible** : il peut être saisi, cassé, effacé ou perdu, et celui qui le tient peut regarder, supprimer ou diffuser ce qui a été filmé.
-
-Témoin fait sortir les images du téléphone **pendant l'enregistrement**, chiffrées de sorte que :
-
-- le téléphone **ne peut pas relire** ce qu'il a filmé (il n'a que la clé *publique* du serveur) ;
-- le serveur **ne peut pas lire** ce qu'il stocke (il n'a jamais la clé privée) ;
-- seul l'organisateur, avec une clé privée gardée sur son propre ordinateur, peut déchiffrer — et peut ensuite **rendre à chacun ses propres enregistrements** par un lien à usage unique.
-
-Un téléphone perdu ou pris en plein tournage ne perd que les 2 à 4 dernières secondes.
 
 ## Comment ça marche
 
