@@ -19,6 +19,30 @@
 
 ---
 
+## 📲 Installer l'app
+
+| | |
+|---|---|
+| **iPhone** | **[Rejoindre la bêta publique sur TestFlight](https://testflight.apple.com/join/DYbucJRp)** : installez l'app *TestFlight* d'Apple, ouvrez le lien, touchez *Accepter* puis *Installer*. La version App Store est en cours de vérification. |
+| **Android** | **[Télécharger l'APK](../../releases/latest)** (`Temoin-vX.Y.Z-android.apk`) et l'installer directement, voir ci-dessous. Google Play arrive. |
+| **Serveur** | L'app envoie vers *votre* serveur : installez l'appli de bureau (Windows, Mac) ou Docker, voir [Démarrer](#démarrer). |
+
+<details>
+<summary><strong>Installer l'APK Android</strong> (hors Google Play)</summary>
+
+1. Sur le téléphone, ouvrez la [dernière version](../../releases/latest) et téléchargez `Temoin-vX.Y.Z-android.apk`.
+2. Ouvrez le fichier téléchargé. Android demande d'autoriser l'installation depuis cette source (votre navigateur ou gestionnaire de fichiers) : autorisez, revenez en arrière, touchez **Installer**.
+3. Si Play Protect prévient que l'app est inconnue, touchez **Plus de détails → Installer quand même** : l'app n'est pas encore sur Google Play, donc Google ne l'a pas analysée.
+4. Facultatif, pour vérifier l'APK : l'empreinte SHA-256 de son certificat de signature est
+   `E3:86:BB:5F:3D:38:07:BB:2B:19:7F:9A:B3:3F:AC:F7:BC:F1:05:EF:7A:5E:DF:8F:50:36:A6:A6:FF:7B:B4:CA`
+   (`apksigner verify --print-certs Temoin-*.apk`). Les mises à jour doivent être signées avec la même clé.
+
+Android 10 ou plus récent. L'app se mettra à jour depuis Google Play une fois publiée là-bas.
+</details>
+
+> [!IMPORTANT]
+> **On cherche des testeurs Android 🙋** Google ne publie les apps des nouveaux comptes développeur qu'après un test fermé avec **au moins 12 testeurs pendant 14 jours**. Si vous avez un téléphone Android et pouvez garder l'app installée deux semaines (en l'utilisant de temps en temps), envoyez l'adresse Gmail de votre compte Google à **max.aumard93@gmail.com** avec l'objet *Testeur Témoin*. Vous recevrez un lien d'invitation pour installer l'app depuis Google Play. Merci !
+
 ## Pourquoi
 
 Quand les images que l'on filme comptent, **le téléphone est le point faible** : il peut être saisi, cassé, effacé ou perdu, et celui qui le tient peut regarder, supprimer ou diffuser ce qui a été filmé.
@@ -81,7 +105,7 @@ Vrai iPhone, version précédente (l'ancien nom de l'app est flouté). La page d
 - **Docker** (NAS, VPS, machine Linux) — `ghcr.io/temoin-app/temoin-server`, voir l'[auto-hébergement](docs/SELF-HOSTING.md).
 - **Service Linux** sans Docker — un binaire statique + une unité systemd, voir l'[auto-hébergement](docs/SELF-HOSTING.md).
 
-**2. Les téléphones.** Installez l'app — **Android** : APK dans les [releases](../../releases) (F-Droid et Google Play à venir) ; **iPhone** : bêta publique sur [TestFlight](https://testflight.apple.com/join/DYbucJRp) (App Store à venir), ou l'IPA non signée des releases à installer soi-même. Puis scannez un QR d'invitation de votre serveur, filmez.
+**2. Les téléphones.** Installez l'app, voir [Installer l'app](#-installer-lapp) (TestFlight sur iPhone, APK sur Android). Puis scannez un QR d'invitation de votre serveur, filmez.
 
 **3. Récupérer.** Sur l'ordinateur qui a la clé : **Récupérer** dans l'appli de bureau, ou `sr decrypt` en ligne de commande.
 

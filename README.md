@@ -26,6 +26,30 @@
 
 ---
 
+## 📲 Get the app
+
+| | |
+|---|---|
+| **iPhone** | **[Join the public beta on TestFlight](https://testflight.apple.com/join/DYbucJRp)**: install Apple's *TestFlight* app, open the link, tap *Accept* then *Install*. The App Store release is under review. |
+| **Android** | **[Download the APK](../../releases/latest)** (`Temoin-vX.Y.Z-android.apk`) and install it directly, see below. Google Play is coming. |
+| **Server** | The app records to *your* server: install the desktop app (Windows, Mac) or Docker, see [Get started](#get-started). |
+
+<details>
+<summary><strong>Installing the Android APK</strong> (outside Google Play)</summary>
+
+1. On the phone, open the [latest release](../../releases/latest) and download `Temoin-vX.Y.Z-android.apk`.
+2. Open the downloaded file. Android asks to allow installs from this source (your browser or file manager): allow it, go back, tap **Install**.
+3. If Play Protect warns that the app is unknown, tap **More details → Install anyway**: the app is not on Google Play yet, so Google has not scanned it.
+4. Optional, to check the APK: its signing certificate SHA-256 is
+   `E3:86:BB:5F:3D:38:07:BB:2B:19:7F:9A:B3:3F:AC:F7:BC:F1:05:EF:7A:5E:DF:8F:50:36:A6:A6:FF:7B:B4:CA`
+   (`apksigner verify --print-certs Temoin-*.apk`). Updates must be signed with the same key.
+
+Android 10 or later. The app will update from Google Play once it is published there.
+</details>
+
+> [!IMPORTANT]
+> **Android testers wanted 🙋** Google only publishes apps from new developer accounts after a closed test with **at least 12 testers for 14 days**. If you have an Android phone and can keep the app installed for two weeks (using it now and then), please send the Gmail address of your Google account to **max.aumard93@gmail.com** with the subject *Témoin tester*. You will get an invitation link to install the app from Google Play. Thank you!
+
 ## Why
 
 When the footage you film matters, **the phone is the weak point**: it can be seized, broken, wiped or simply lost, and whoever holds it can watch, delete or leak what you filmed.
@@ -88,7 +112,7 @@ Real iPhone, earlier build with a French interface (the old app name is blurred)
 - **Docker** (NAS, VPS, Linux box) — `ghcr.io/temoin-app/temoin-server`, see [self-hosting](docs/SELF-HOSTING.md).
 - **Linux service** without Docker — single static binary + systemd unit, see [self-hosting](docs/SELF-HOSTING.md).
 
-**2. The phones.** Install the app — **Android**: APK from the [releases](../../releases) (F-Droid and Google Play coming); **iPhone**: public beta on [TestFlight](https://testflight.apple.com/join/DYbucJRp) (App Store coming), or the unsigned IPA from the releases to sideload. Then scan an invitation QR from your server, film.
+**2. The phones.** Install the app, see [Get the app](#-get-the-app) (TestFlight on iPhone, APK on Android). Then scan an invitation QR from your server, film.
 
 **3. Recover.** On the computer holding the key: **Recover** in the desktop app, or `sr decrypt` from the command line.
 
