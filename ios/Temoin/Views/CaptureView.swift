@@ -9,6 +9,7 @@ struct CaptureView: View {
     @Environment(\.scenePhase) private var phase
 
     @State private var authorized = AVCaptureDevice.authorizationStatus(for: .video) == .authorized
+    @State private var micDenied = AVCaptureDevice.authorizationStatus(for: .audio) == .denied
     @State private var accepting = true
     @State private var keyChanged = false
     @State private var discreet = false
@@ -61,6 +62,11 @@ struct CaptureView: View {
                 if keyChanged { banner(NSLocalizedString("err_key_changed", comment: "")) }
                 if model.uploadState == .banned { banner(NSLocalizedString("banner_banned", comment: "")) }
                 if model.uploadState == .notRegistered { banner(NSLocalizedString("banner_not_registered", comment: "")) }
+                if micDenied {
+                    banner(NSLocalizedString("banner_no_mic", comment: "")).onTapGesture {
+                        if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+                    }
+                }
                 if let e = engine.error { banner(e).onTapGesture { engine.error = nil } }
                 Spacer()
 
@@ -137,14 +143,14 @@ struct CaptureView: View {
         }
         .statusBarHidden(discreet)
         .onAppear {
-            if authorized { engine.start() } else { requestPermissions() }
+            if authorized { engine.start(); askMicrophoneIfNeeded() } else { requestPermissions() }
             startQuickRecordIfAsked()
         }
         .onChange(of: model.quickRecord) { _ in startQuickRecordIfAsked() }
         .onDisappear { engine.stop() }
         .onChange(of: phase) { p in
             // iOS stops the camera in the background: close the recording cleanly.
-            if p == .background { engine.stop() } else if p == .active && authorized { engine.start() }
+            if p == .background { engine.stop() } else if p == .active && authorized { engine.start(); askMicrophoneIfNeeded() }
         }
         .onChange(of: engine.flash) { _ in
             flashOpacity = 0.8
@@ -247,10 +253,25 @@ struct CaptureView: View {
             .background(accent.opacity(0.9), in: RoundedRectangle(cornerRadius: 12)).padding(.horizontal, 12).padding(.vertical, 4)
     }
 
+    /// The camera may already be allowed by the invitation scanner, which never asks for the
+    /// microphone: ask for it here, otherwise every video would be recorded without sound.
+    private func askMicrophoneIfNeeded() {
+        switch AVCaptureDevice.authorizationStatus(for: .audio) {
+        case .notDetermined:
+            Task {
+                let ok = await AVCaptureDevice.requestAccess(for: .audio)
+                micDenied = !ok
+            }
+        case .authorized: micDenied = false
+        default: micDenied = true
+        }
+    }
+
     private func requestPermissions() {
         Task {
             let v = await AVCaptureDevice.requestAccess(for: .video)
             _ = await AVCaptureDevice.requestAccess(for: .audio)
+            micDenied = AVCaptureDevice.authorizationStatus(for: .audio) != .authorized
             authorized = v
             if v { engine.start() }
         }

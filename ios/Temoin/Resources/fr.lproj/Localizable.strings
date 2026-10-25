@@ -84,6 +84,7 @@
 "up_banned" = "téléphone banni";
 "up_not_registered" = "téléphone inconnu du serveur";
 "banner_banned" = "Ce téléphone a été banni par l'opérateur du serveur. Rien n'est envoyé ; vos enregistrements restent chiffrés sur le téléphone au cas où le bannissement serait levé.";
+"banner_no_mic" = "Le micro est refusé : les vidéos sont enregistrées sans son. Touchez pour ouvrir les Réglages.";
 "banner_not_registered" = "Le serveur ne connaît plus ce téléphone. Scannez une nouvelle invitation pour le rejoindre.";
 "s_device" = "Mon appareil";
 "s_device_name" = "Nom sur le serveur";

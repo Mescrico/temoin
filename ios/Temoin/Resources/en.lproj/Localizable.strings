@@ -85,6 +85,7 @@
 "up_banned" = "this phone is banned";
 "up_not_registered" = "phone unknown to the server";
 "banner_banned" = "This phone has been banned by the server operator. Nothing is sent; your recordings stay encrypted on the phone in case the ban is lifted.";
+"banner_no_mic" = "Microphone access is off: videos are recorded without sound. Tap to open Settings.";
 "banner_not_registered" = "The server no longer knows this phone. Scan a new invitation to join it again.";
 "s_device" = "My device";
 "s_device_name" = "Name on the server";
