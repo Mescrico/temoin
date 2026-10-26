@@ -328,6 +328,32 @@ def main():
                 print("App Review:", "submitted" if r is not None else "FAILED")
         if FAILURES:
             sys.exit(1)
+    elif cmd == "cancel-review":
+        # Withdraws the version from App Review (to attach a newer build), then waits until
+        # it is editable again. `metadata` then picks the newest build and `submit` resubmits.
+        version = sys.argv[2]
+        app_id = call("GET", "/apps?filter[bundleId]=io.github.temoin-app.temoin")["data"][0]["id"]
+        subs = call("GET", f"/reviewSubmissions?filter[app]={app_id}&filter[platform]=IOS&limit=20")["data"]
+        active = [s for s in subs if s["attributes"].get("state") in ("WAITING_FOR_REVIEW", "IN_REVIEW", "UNRESOLVED_ISSUES", "READY_FOR_REVIEW")]
+        for s in active:
+            r = call("PATCH", f"/reviewSubmissions/{s['id']}", {"data": {"type": "reviewSubmissions", "id": s["id"],
+                     "attributes": {"canceled": True}}}, soft=True)
+            print(f"review submission {s['attributes'].get('state')}:", "canceled" if r is not None else "FAILED")
+        if not active:
+            print("no active review submission")
+        editable = ("PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED")
+        for _ in range(40):
+            versions = call("GET", f"/apps/{app_id}/appStoreVersions?filter[platform]=IOS")["data"]
+            ver = next(v for v in versions if v["attributes"].get("versionString") == version)
+            state = ver["attributes"].get("appStoreState") or ver["attributes"].get("appVersionState")
+            if state in editable:
+                break
+            time.sleep(15)
+        print(f"version {version}: {state}")
+        if state not in editable:
+            FAILURES.append(f"version {version} still {state}")
+        if FAILURES:
+            sys.exit(1)
     elif cmd == "metadata":
         metadata(sys.argv[2], sys.argv[3])
     elif cmd == "public-link":

@@ -7,7 +7,7 @@ on:
       task:
         description: What to do
         type: choice
-        options: [metadata, screenshots, public-link, internal-testing, submit]
+        options: [metadata, screenshots, public-link, internal-testing, submit, replace-build]
         default: metadata
 
 jobs:
@@ -39,4 +39,11 @@ jobs:
         if: inputs.task == 'submit'
         run: |
           version=$(sed -n 's/.*MARKETING_VERSION: "\(.*\)"/\1/p' ios/project.yml)
+          python3 tools/appstore.py submit "$version"
+      - name: Replace the build under App Review with the newest one, then resubmit
+        if: inputs.task == 'replace-build'
+        run: |
+          version=$(sed -n 's/.*MARKETING_VERSION: "\(.*\)"/\1/p' ios/project.yml)
+          python3 tools/appstore.py cancel-review "$version"
+          python3 tools/appstore.py metadata docs/distribution/appstore.json "$version"
           python3 tools/appstore.py submit "$version"
