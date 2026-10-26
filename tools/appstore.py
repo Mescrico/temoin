@@ -251,6 +251,8 @@ def main():
             r = call("POST", "/betaTesters", {"data": {"type": "betaTesters",
                      "attributes": {"email": a["username"], "firstName": a.get("firstName", ""), "lastName": a.get("lastName", "")},
                      "relationships": {"betaGroups": {"data": [{"type": "betaGroups", "id": group["id"]}]}}}}, soft=True)
+            if r is None and "409" in FAILURES[-1]:
+                FAILURES.pop()  # already a tester: not an error
             print("team member added as internal tester" if r is not None else "team member: already a tester or not addable")
         if FAILURES:
             sys.exit(1)
