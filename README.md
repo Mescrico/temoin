@@ -24,6 +24,10 @@
   <img alt="Not audited" src="https://img.shields.io/badge/security%20audit-none%20yet-red">
 </p>
 
+<p align="center">
+  <img src="docs/images/phone-record.gif" width="260" alt="One tap on the lock screen: the iPhone films, encrypts and uploads at once">
+</p>
+
 ---
 
 ## Why

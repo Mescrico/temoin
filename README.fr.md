@@ -18,6 +18,10 @@
   <a href="SECURITY.md">Sécurité</a>
 </p>
 
+<p align="center">
+  <img src="docs/images/phone-record.gif" width="260" alt="Un geste sur l'écran verrouillé : l'iPhone filme, chiffre et envoie aussitôt">
+</p>
+
 ---
 
 ## Pourquoi
