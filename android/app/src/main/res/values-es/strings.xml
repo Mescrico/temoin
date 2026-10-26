@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Témoin</string>
+    <string name="tagline">Graba. Encripta. Publica. Nada se queda en el teléfono.</string>
+
+    <!-- onboarding -->
+    <string name="onb_title">Conectate a un servidor</string>
+    <string name="onb_body">Todas las fotos y vídeos se cifran en este teléfono con la clave pública del servidor, se envían en cuanto hay red y luego se eliminan de aquí. Nadie puede verlos en el teléfono, ni siquiera tú. Solo el operador del servidor puede descifrarlos, sin conexión.</string>
+    <string name="onb_scan">Escanea un código QR de invitación</string>
+    <string name="onb_manual">Introduce una dirección</string>
+    <string name="onb_url">Dirección del servidor</string>
+    <string name="onb_connect">Conectar</string>
+    <string name="onb_checking">Contactando al servidor…</string>
+    <string name="onb_confirm_title">¿Confías en este servidor?</string>
+    <string name="onb_confirm_body">Comprueba esta huella digital con el organizador. Tus grabaciones solo se podrán leer con esta clave.</string>
+    <string name="onb_confirm_qr_body">La clave coincide con el código QR. Tus grabaciones solo se podrán leer con esta clave.</string>
+    <string name="trust">Confiar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="err_key_mismatch">La clave del servidor no coincide con el código QR. No utilices esta red.</string>
+    <string name="err_key_changed">La clave del servidor ha cambiado desde que te uniste. No se envía nada. Pregunta al organizador antes de volver a escanear su código QR.</string>
+    <string name="err_not_server">No es un servidor de Témoin: %1$s</string>
+    <string name="err_bad_qr">Este código QR no es un código de inscripción de Témoin.</string>
+
+    <!-- capture -->
+    <string name="mode_photo">Foto</string>
+    <string name="mode_video">Vídeo</string>
+    <string name="mode_live">En directo</string>
+    <string name="live_hint">Continuo: sigue grabando con la pantalla bloqueada, en segmentos cortos, se reinicia solo.</string>
+    <string name="discreet">Pantalla oscura</string>
+    <string name="discreet_hint">Grabando · toca 3 veces para volver</string>
+    <string name="switch_camera">Cambiar cámara</string>
+    <string name="settings">Ajustes</string>
+    <string name="queue_empty">Todo enviado</string>
+    <string name="queue_pending">%1$d en espera · %2$s</string>
+    <string name="up_uploading">Enviando…</string>
+    <string name="up_waiting">Sin red</string>
+    <string name="up_paused">Servidor pausado</string>
+    <string name="up_error">Reintentando</string>
+    <string name="perm_needed">Se necesita acceso a la cámara y al micrófono para grabar.</string>
+    <string name="grant">Permitir</string>
+    <string name="err_storage">Almacenamiento del teléfono casi lleno: grabación detenida.</string>
+    <string name="err_camera">Se perdió la cámara. %1$s</string>
+    <string name="sealed_info">%1$d cifrado(s) · ilegible(s) en este teléfono</string>
+
+    <!-- settings -->
+    <string name="s_server">Servidor</string>
+    <string name="s_fingerprint">Huella digital de la clave</string>
+    <string name="s_quality">Calidad de vídeo</string>
+    <string name="q_720">720p — recomendado</string>
+    <string name="q_1080">1080p</string>
+    <string name="q_1080_warn_title">¿Cambiar a 1080p?</string>
+    <string name="q_1080_warn">1080p utiliza aproximadamente el doble de almacenamiento y datos (≈2.3 GB por hora en lugar de ≈1.1 GB) y tarda el doble en subirse en una red móvil saturada. Úsalo solo cuando necesites el detalle.</string>
+    <string name="q_1080_blocked">Este servidor solo acepta hasta %1$dp.</string>
+    <string name="s_camera">Cámara</string>
+    <string name="cam_back">Trasera</string>
+    <string name="cam_front">Frontal</string>
+    <string name="cam_external">Externa (USB)</string>
+    <string name="cam_external_help">Las cámaras USB-C (UVC) aparecen aquí cuando tu teléfono las admite (la mayoría de los teléfonos con Android 14+). El Bluetooth no puede transmitir vídeo; las cámaras de acción por Wi-Fi aún no son compatibles.</string>
+    <string name="s_mic">Micrófono</string>
+    <string name="mic_default">Automático</string>
+    <string name="s_location">Adjuntar ubicación</string>
+    <string name="s_location_help">Añade la posición GPS dentro del archivo cifrado. Desactivado por defecto.</string>
+    <string name="s_wifi">Subir solo con Wi-Fi</string>
+    <string name="s_queue">Pendiente de subida</string>
+    <string name="s_send_now">Enviar ahora</string>
+    <string name="s_rejected">%1$d objeto(s) rechazado(s) por el servidor</string>
+    <string name="s_clear">Borrar</string>
+    <string name="s_forget">Olvidar este servidor</string>
+    <string name="s_forget_warn">Hay %1$d objeto(s) cifrado(s) esperando. Solo se pueden enviar a este servidor: olvidarlo los eliminará.</string>
+    <string name="s_forget_confirm">Olvidar y eliminar</string>
+    <string name="s_about">Cómo funciona</string>
+    <string name="s_about_body">Los archivos multimedia nunca se almacenan sin cifrar: los fotogramas se codifican y cifran en la memoria, en segmentos de unos pocos segundos, con la clave pública del servidor (age / X25519). Este teléfono no tiene ninguna clave para descifrarlos. Los segmentos se suben tan pronto como es posible y se eliminan después de que el servidor los confirme.</string>
+    <string name="back">Atrás</string>
+    <string name="ok">Aceptar</string>
+
+    <!-- notification -->
+    <string name="notif_channel">Grabando</string>
+    <string name="notif_recording">Grabando — cifrado</string>
+    <string name="notif_recording_text">Los segmentos se envían automáticamente.</string>
+    <string name="stop">Detener</string>
+    <string name="onb_invite">Código de invitación</string>
+    <string name="err_invite_required">Introduce el código de invitación proporcionado por el organizador.</string>
+    <string name="err_invite_unknown">Código de invitación desconocido. Compruébalo con el organizador.</string>
+    <string name="err_invite_expired">Esta invitación ha caducado. Pide una nueva al organizador.</string>
+    <string name="err_invite_revoked">Esta invitación ha sido revocada. Pide una nueva al organizador.</string>
+    <string name="err_invite_exhausted">Esta invitación ya ha sido utilizada por el número máximo de teléfonos.</string>
+    <string name="err_banned">Este teléfono ha sido bloqueado en este servidor.</string>
+    <string name="err_register">No se pudo unir al servidor: %1$s</string>
+    <string name="up_banned">este teléfono está bloqueado</string>
+    <string name="up_not_registered">teléfono desconocido para el servidor</string>
+    <string name="banner_banned">Este teléfono ha sido bloqueado por el operador del servidor. No se envía nada; tus grabaciones permanecen cifradas en el teléfono por si se levantara el bloqueo.</string>
+    <string name="banner_not_registered">El servidor ya no reconoce este teléfono. Escanea una nueva invitación para unirte de nuevo.</string>
+    <string name="s_device">Mi dispositivo</string>
+    <string name="s_device_name">Nombre en el servidor</string>
+    <string name="s_device_quota">%1$s de %2$s utilizado</string>
+    <string name="s_device_objects">Archivos recibidos por el servidor: %1$d</string>
+    <string name="s_device_last">Última subida: %1$s</string>
+    <string name="s_device_never">Aún no se ha enviado nada</string>
+    <string name="s_device_offline">Servidor inalcanzable — datos de la última conexión.</string>
+    <string name="s_device_key">Clave del dispositivo</string>
+    <string name="s_device_help">Este teléfono tiene su propia clave para este servidor. El servidor solo conoce este seudónimo, nunca quién eres.</string>
+    <string name="err_no_answer">Dirección o código de invitación erróneos: el servidor no respondió.</string>
+    <string name="flash">Flash</string>
+    <string name="tile_record">Grabar ahora</string>
+    <string name="shortcut_record_long">Empezar a grabar ahora</string>
+    <string name="unlock_to_setup">Desbloquea el teléfono para configurar Témoin.</string>
+    <string name="hb_title">Recuperar mis archivos</string>
+    <string name="hb_help">Tus vídeos y fotos solo pueden ser leídos por el organizador. Pídeselos: obtendrás un código para transmitir (en persona, por SMS, Signal…). Te enviarán, a través de otro canal, un enlace de un solo uso para guardarlos en cualquier teléfono, incluso sin esta aplicación.</string>
+    <string name="hb_ask">Pedir mis archivos</string>
+    <string name="hb_again">Nueva solicitud</string>
+    <string name="hb_code">Código para entregar al organizador</string>
+    <string name="hb_copy">Copiar</string>
+    <string name="hb_copied">Código copiado</string>
+    <string name="hb_how">El organizador te enviará un enlace. Se abre una sola vez: ábrelo en el dispositivo donde quieras conservar los archivos.</string>
+    <string name="hb_pending">Esperando: el enlace aún no está listo.</string>
+    <string name="hb_ready">Enlace listo: el organizador tiene que enviártelo.</string>
+    <string name="hb_opened">Enlace abierto: guarda los archivos en el dispositivo que lo abrió.</string>
+    <string name="hb_done">Último enlace usado: archivos recuperados.</string>
+    <string name="hb_expired">El último enlace caducó sin ser abierto.</string>
+    <string name="hb_revoked">El último enlace fue cancelado por el organizador.</string>
+    <string name="hb_valid">Código válido hasta el %1$s</string>
+    <string name="hb_failed">Error en la solicitud: %1$s</string>
+</resources>
